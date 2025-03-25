@@ -1,12 +1,16 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import authRoutes from './routes/auth.routes';
+import dotenv from 'dotenv';
+import connectDB from './config/db';
+
+dotenv.config();
 
 const app = express();
-const port = 3000;
+app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, world!');
-});
+app.use('/auth', authRoutes);
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+const PORT = process.env.PORT;
+connectDB();
+
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
