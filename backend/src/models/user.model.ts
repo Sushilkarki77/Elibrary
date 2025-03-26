@@ -1,52 +1,62 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { IRole } from './role.model';
 
 export interface IUser extends Document {
-  username: string;
-  password: string;
-  comparePassword(candidatePassword: string): Promise<boolean>;
+    username: string;
+    password: string;
+    role: mongoose.Types.ObjectId | IRole;
+    comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema = new Schema<IUser>(
-  {
+const UserSchema: Schema<IUser> = new Schema<IUser>({
     username: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        minlength: 3,
+        maxlength: 50,
     },
     password: {
-      type: String,
-      required: true,
+        type: String,
+        required: true,
+        minlength: 6,
     },
-  },
-  { timestamps: true }
-);
+    role: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Role',
+        required: true,
+    },
+}, { timestamps: true });
 
 UserSchema.pre<IUser>('save', async function (next) {
-  if (!this.isModified('password')) return next();
-
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+    return bcrypt.compare(candidatePassword, this.password);
 };
 
-const UserModel = mongoose.model<IUser>('User', UserSchema);
+export const UserModel = mongoose.model<IUser>('User', UserSchema);
 
-export const getUsers = (): Promise<IUser[]> => UserModel.find().exec();
+export const getAllUsers = async (): Promise<IUser[] | null> => {
+    const users: IUser[] = await UserModel.find().exec();
+    return users;
+}
 
-export const getUserByUsername = (username: string): Promise<IUser | null> =>
-  UserModel.findOne({ username }).exec();
+export const createUser = async (username: string, password: string, roleId: mongoose.Types.ObjectId): Promise<IUser> => {
+    const user = new UserModel({ username, password, role: roleId });
+    return await user.save();
+};
 
-export const createUser = (values: Partial<IUser>): Promise<IUser> =>
-  new UserModel(values).save().then((user) => user.toObject() as IUser);
+export const deleteUserById = async (id: string): Promise<IUser | null> => {
+    return UserModel.findByIdAndDelete(id).exec();
+  };
 
-export const updateUserByUsername = (username: string, values: Partial<IUser>): Promise<IUser | null> =>
-  UserModel.findOneAndUpdate({ username }, values, { new: true }).exec();
-
-export const deleteUserByUsername = (username: string): Promise<IUser | null> =>
-  UserModel.findOneAndDelete({ username }).exec();
+export const findUserByUsername = (username: string): Promise<IUser | null> => {
+    return UserModel.findOne({ username }).populate('role').exec();
+};
