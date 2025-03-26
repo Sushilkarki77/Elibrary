@@ -22,8 +22,8 @@ export const RoleModel = mongoose.model<IRole>('Role', RoleSchema);
 
 export const seedRoles = async () => {
   const roles = [
-    { name: 'admin', permissions: ['create_post', 'edit_post', 'delete_post', 'manage_users'] },
-    { name: 'user', permissions: ['create_post', 'edit_own_post', 'delete_own_post'] },
+    { name: 'admin', permissions: ['manage_owened_documents', 'manage_users'] },
+    { name: 'user', permissions: ['manage_owened_documents'] },
   ];
 
   for (const role of roles) {
