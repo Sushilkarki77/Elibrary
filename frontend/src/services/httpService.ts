@@ -3,6 +3,8 @@ import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
+const TOKEN_KEY = 'userToken';
+
 
 
 interface LoginResponse {
@@ -24,7 +26,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken'); 
+    const token = localStorage.getItem(TOKEN_KEY); 
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`; 
     }
@@ -59,6 +61,12 @@ export const loginRequest = async (username: string, password: string): Promise<
       }
   }
 };
+
+
+export const getNavItems = async (): Promise<{ name: string, path: string }[]> => {
+  const navItems: { name: string, path: string }[] = await  getData('/general/nav-items');
+  return navItems;
+}
 
 export const getData = async <T>(endpoint: string): Promise<T> => {
   try {

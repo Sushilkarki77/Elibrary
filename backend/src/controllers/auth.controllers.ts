@@ -5,21 +5,11 @@ import dotenv from 'dotenv';
 import { createUser, deleteUserById, findUserByUsername, getAllUsers, IUser } from '../models/user.model';
 import { RoleModel, IRole, seedRoles } from '../models/role.model';
 import mongoose from 'mongoose';
+import { AuthRequestBody, TokenPayload } from '../interfaces/interfaces';
 
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY || '';
-
-interface AuthRequestBody {
-    username: string;
-    password: string;
-}
-
-interface TokenPayload {
-    id: string;
-    username: string;
-    role: mongoose.Types.ObjectId | IRole;
-}
 
 export const register: RequestHandler<unknown, unknown, AuthRequestBody> = async (req, res, next) => {
     try {
@@ -127,31 +117,7 @@ export const deleteUserHandler: RequestHandler<{ id: string }, unknown, unknown>
 };
 
 
-export const getNavItems: RequestHandler = async (req, res, next) => {
-    try {
-        const user = await findUserByUsername((req as any).user.username);
-        if (!user) {
-            res.status(404).json({ message: 'User not found' });
-            return;
-        }
 
-        const adminNav = [
-            { name: 'Dashboard', path: '/dashboard' },
-            { name: 'Manage Users', path: '/users' },
-        ];
-
-        const userNav = [
-            { name: 'Home', path: '/' },
-            { name: 'Profile', path: '/profile' },
-        ];
-
-        const navItems = (user.role as IRole).name === 'admin' ? adminNav : userNav;
-        res.status(200).json({ navItems });
-        return;
-    } catch (error) {
-        return next(error);
-    }
-};
 
 export const seedRolesHandler: RequestHandler = async (req, res, next) => {
 

@@ -3,9 +3,9 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 import './App.css'
 import LoginPage from './pages/login'
 import Dashboard from './pages/dashboard'
-import PrivateRoutes from './component/RouteGuard'
+import PrivateRoutes from './guards/RouteGuard'
 import { AuthProvider } from './context/auth.context'
-import ProtectedLoginRoute from './component/ProtectedLoginRouteGuard'
+import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
 
 function App() {
 
