@@ -31,7 +31,6 @@ export const deleteDocumentById = async (id: mongoose.Types.ObjectId): Promise<I
     return DocumentModel.findOneAndDelete(id).exec();
 }
 
-export const addDocument = async (userid: mongoose.Types.ObjectId, documentName: string): Promise<IDocument | null> => {
-    const document = new DocumentModel(userid, documentName);
-    return await document.save();
+export const addDocument = async (user: IUser, documentName: string): Promise<IDocument | null> => {
+    return new DocumentModel({documentName, userId: user._id}).save().then((post) => post.toObject() as IDocument);
 }
