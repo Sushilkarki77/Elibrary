@@ -22,19 +22,25 @@ const Sidebar: React.FC = () => {
     return (
         <div className="flex h-screen bg-gray-100">
 
-            <div className="w-48 shadow-lg bg-white text-gray-700 p-4 border-r border-gray-300 flex flex-col">
-                <h2 className="text-2xl font-bold text-gray-800">Elibrary</h2>
+            <div className="w-36 shadow-lg bg-white text-gray-700  border-r border-gray-300 flex flex-col">
+
+                <h2 className="text-2xl text-center font-bold text-gray-800">Elibrary</h2>
                 <ul className="mt-6">
 
                     {navItems && navItems?.map(item =>
-                        <li className="text-lg mb-4" key={item.name + item.path}>
-                            <NavLink to={item.path} className="hover:bg-gray-100 block border-b border-gray-300 w-full">{item.name}</NavLink>
+                        <li className="text-lg mb-1" key={item.name + item.path}>
+                            <NavLink
+                                to={item.path}
+                                className={({ isActive }) =>
+                                    `${isActive ? 'nav-link-active' : ''} nav-link border-b border-gray-300 w-full`
+                                }
+                            >{item.name}</NavLink>
                         </li>
                     )}
 
                 </ul>
                 <div className='mt-auto text-left'>
-                    <button className="hover:bg-gray-100 block p-2 w-full text-left" onClick={handleLogut}>Logout</button>
+                    <button className="hover:bg-gray-100 block p-2 w-full text-left" onClick={handleLogut}>Log out</button>
                 </div>
             </div>
 

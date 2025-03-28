@@ -1,5 +1,6 @@
 import React from 'react';
 import Sidebar from '../components/sidebar';
+import { Outlet } from 'react-router';
 
 const Dashboard: React.FC = () => {
   return (
@@ -7,8 +8,8 @@ const Dashboard: React.FC = () => {
 
       <Sidebar />
 
-      <div className="flex-1 p-8">
-            Welcome to dashboard
+      <div className="flex-1 bg-white border border-gray-300 m-4 rounded shadow-2xs p-8">
+            <Outlet />
       </div>
     </div>
 

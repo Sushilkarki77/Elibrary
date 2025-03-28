@@ -85,6 +85,15 @@ body {
   .btn-nav {
     @apply  hover:text-gray-700 transition duration-300
   }
+
+  .nav-link {
+    @apply hover:bg-gray-100 block border-b p-2 text-sm border-gray-300 w-full;
+  }
+  
+  .nav-link-active {
+    @apply font-semibold border-r-2 border-r-purple-600 text-purple-600 ;
+  }
+  
   
 }
 

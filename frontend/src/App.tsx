@@ -1,11 +1,13 @@
 
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import './App.css'
 import LoginPage from './pages/login'
 import Dashboard from './pages/dashboard'
 import PrivateRoutes from './guards/RouteGuard'
 import { AuthProvider } from './context/auth.context'
 import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
+import FilestList from './components/filesList'
+import UsersList from './components/UsersList'
 
 function App() {
 
@@ -17,9 +19,15 @@ function App() {
             <Route path='/login' element={<ProtectedLoginRoute><LoginPage /></ProtectedLoginRoute>} />
 
             <Route element={<PrivateRoutes />} >
-              <Route path='/dashboard' element={<Dashboard />} />
-              <Route path='*' element={<Dashboard />} />
+              <Route path='/' element={<Dashboard />}>
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path='/dashboard' element={<FilestList />} />
+                <Route path='/users' element={<UsersList />} />
+              </Route>
             </Route>
+
+            <Route path='*' element={<><div className='text-center'>Page doesnot exist!</div></>} />
+
           </Routes>
         </AuthProvider>
       </BrowserRouter>
