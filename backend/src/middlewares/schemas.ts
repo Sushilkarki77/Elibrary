@@ -7,7 +7,8 @@ export const userSchema = z.object({
 
 
 export const documentSchema = z.object({
-    documentName: z.string()
+    documentName: z.string(),
+    documentLabel: z.string()
 });
 
 export type UserSchema = z.infer<typeof userSchema>;

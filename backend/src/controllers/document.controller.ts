@@ -2,7 +2,8 @@ import { RequestHandler } from "express";
 import { ResponseItem } from "../interfaces/interfaces";
 import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 import { findUserByUsername, IUser } from "../models/user.model";
-import { addDocument, getDocumentsByUserId, IDocument } from "../models/document.model";
+import { addDocument, deleteDocumentById, getDocumentById, getDocumentsByUserId, IDocument } from "../models/document.model";
+import mongoose from "mongoose";
 
 
 
@@ -31,7 +32,7 @@ export const getDocumentsByUserIdHandler: RequestHandler<unknown, ResponseItem<I
 
 }
 
-export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName: string }> = async (req, res, next) => {
+export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName: string, documentLabel: string }> = async (req, res, next) => {
 
     try {
 
@@ -49,7 +50,7 @@ export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName
         }
 
 
-        const document = await addDocument(user, tempDocument.documentName);
+        const document = await addDocument(user, tempDocument.documentName, tempDocument.documentLabel);
 
         res.status(200).json({ data: document })
     } catch (error) {
@@ -59,7 +60,50 @@ export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName
 }
 
 
-export const confirmUpload: RequestHandler  = (req, res, next) => {
+export const deleteDocumentHandler: RequestHandler<{ documentId: string }, unknown, unknown> = async (req, res, next) => {
+    try {
+        const userName = (req as AuthenticatedRequest)?.user?.username;
+        const { documentId } = req.params;
+
+        if (!userName) {
+            res.status(404).json({ name: 'error', message: 'User not found' });
+            return;
+        }
+
+        const user = await findUserByUsername(userName);
+        if (!user) {
+            res.status(404).json({ name: 'error', message: 'User not found' });
+            return;
+        }
+
+
+        if (!mongoose.Types.ObjectId.isValid(documentId)) {
+            res.status(400).json({ name: 'error', message: 'Invalid document ID' });
+            return;
+        }
+
+        const documentToBeDeleted = await getDocumentById(documentId);
+
+        if(documentToBeDeleted?.userId?.toString() !== user?._id?.toString()) {
+            res.status(401).json({ name: 'error', message: 'Document not found or not authorized' });
+            return;
+        }
+
+        const documentDeleted = await deleteDocumentById(new mongoose.Types.ObjectId(documentId));
+
+        if (!documentDeleted) {
+            res.status(404).json({ name: 'error', message: 'Document not found or not authorized' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Document deleted successfully' });
+    } catch (error) {
+        return next(error);
+    }
+}
+
+
+export const confirmUpload: RequestHandler = (req, res, next) => {
 
     try {
         if (!req.file) {
@@ -67,6 +111,7 @@ export const confirmUpload: RequestHandler  = (req, res, next) => {
             return;
         }
         req.body.documentName = req.file.filename;
+        req.body.documentLabel = req.file.originalname;
         next();
     } catch (error) {
         return next(error);

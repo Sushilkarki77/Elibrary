@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
 
             <div className="w-36 shadow-lg bg-white text-gray-700  border-r border-gray-300 flex flex-col">
 
-                <h2 className="text-2xl text-center font-bold text-gray-800">Elibrary</h2>
+                <h3 className="text-2xl text-left p-3 font-bold text-gray-800">Elibrary</h3>
                 <ul className="mt-6">
 
                     {navItems && navItems?.map(item =>

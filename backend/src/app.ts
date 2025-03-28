@@ -25,7 +25,7 @@ app.use('/auth', authRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/general',authenticateToken, generalRoutes);
-app.use('/document',authenticateToken, documentsRoutes);
+app.use('/documents',authenticateToken, documentsRoutes);
 
 
 app.use('/users', authenticateToken, authorize(['manage_users']), userRoutes);

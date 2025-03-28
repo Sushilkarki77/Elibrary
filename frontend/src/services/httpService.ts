@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
+import { Document } from '../interfaces/interfaces';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'userToken';
@@ -81,6 +82,11 @@ export const loginRequest = async (username: string, password: string): Promise<
 export const getNavItems = async (): Promise<{ name: string, path: string }[]> => {
   const navItems: { name: string, path: string }[] = await getData('/general/nav-items');
   return navItems;
+}
+
+export const getDocuments = async (): Promise<Document[]> => {
+  const documents: Document[] = await getData('/documents');
+  return documents;
 }
 
 export const getData = async <T>(endpoint: string): Promise<T> => {

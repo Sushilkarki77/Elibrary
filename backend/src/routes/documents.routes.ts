@@ -1,5 +1,5 @@
 import express from 'express';
-import { addDocumentHandler, confirmUpload, getDocumentsByUserIdHandler, uploadMultiplePDFs } from '../controllers/document.controller';
+import { addDocumentHandler, confirmUpload, deleteDocumentHandler, getDocumentsByUserIdHandler, uploadMultiplePDFs } from '../controllers/document.controller';
 import { validateRequest } from '../middlewares/requestValidator.middleware';
 import { documentSchema } from '../middlewares/schemas';
 import { upload } from '../config/multerConfig';
@@ -12,6 +12,8 @@ router.post("/upload-pdfs", upload.array("files", 5), uploadMultiplePDFs);
 
 router.post('/', validateRequest(documentSchema), addDocumentHandler);
 router.get('/', getDocumentsByUserIdHandler);
+router.delete('/:documentId', deleteDocumentHandler);
+
 
 
 

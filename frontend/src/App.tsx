@@ -6,8 +6,8 @@ import Dashboard from './pages/dashboard'
 import PrivateRoutes from './guards/RouteGuard'
 import { AuthProvider } from './context/auth.context'
 import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
-import FilestList from './components/filesList'
 import UsersList from './components/UsersList'
+import DocumentsList from './components/DocumentsList'
 
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
             <Route element={<PrivateRoutes />} >
               <Route path='/' element={<Dashboard />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path='/dashboard' element={<FilestList />} />
+                <Route path='/dashboard' element={<DocumentsList />} />
                 <Route path='/users' element={<UsersList />} />
               </Route>
             </Route>
