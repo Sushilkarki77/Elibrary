@@ -1,5 +1,6 @@
 import React from 'react';
 import { Document } from '../interfaces/interfaces';
+import { formatDate } from '../utils';
 
 type DocumentProps = {
     document: Document
@@ -10,7 +11,7 @@ const DocumentItem: React.FC<DocumentProps> = ({ document }) => {
     return (
         <tr className="border-b border-gray-300 hover:bg-gray-50">
             <td className="px-6 py-4 text-sm text-gray-800">{document.documentLabel}</td>
-            <td className="px-6 py-4 text-sm text-gray-800">{document.createdAt}</td>
+            <td className="px-6 py-4 text-sm text-gray-800">{formatDate(document.createdAt)}</td>
             <td className="px-6 py-4 text-sm text-gray-800 flex gap-2">
                 <button className="px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200">
                     View
