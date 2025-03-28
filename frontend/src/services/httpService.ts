@@ -12,13 +12,13 @@ interface LoginResponse {
 }
 
 interface ApiResponse<T> {
-    data: T
+  data: T
 }
 
 
 
 const apiClient = axios.create({
-  baseURL: API_URL,  
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -26,9 +26,9 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(TOKEN_KEY); 
+    const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`; 
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -52,19 +52,20 @@ apiClient.interceptors.request.use(
 export const loginRequest = async (username: string, password: string): Promise<string> => {
   try {
     const response: AxiosResponse<LoginResponse> = await apiClient.post('/auth/login', { username, password });
-    return response?.data?.token; 
+    return response?.data?.token;
   } catch (error) {
-    if (error instanceof Error) {
-        throw error
-      } else {
-        throw error;
-      }
+    if (error instanceof AxiosError) {
+      window.alert(error.response?.data.message)
+      throw error
+    } else {
+      throw error;
+    }
   }
 };
 
 
 export const getNavItems = async (): Promise<{ name: string, path: string }[]> => {
-  const navItems: { name: string, path: string }[] = await  getData('/general/nav-items');
+  const navItems: { name: string, path: string }[] = await getData('/general/nav-items');
   return navItems;
 }
 
@@ -74,10 +75,10 @@ export const getData = async <T>(endpoint: string): Promise<T> => {
     return response.data.data;
   } catch (error) {
     if (error instanceof Error) {
-        throw error
-      } else {
-        throw error;
-      }
+      throw error
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -87,9 +88,9 @@ export const postData = async <T>(endpoint: string, data: T): Promise<T> => {
     return response.data.data;
   } catch (error) {
     if (error instanceof Error) {
-        throw error
-      } else {
-        throw error;
-      }
+      throw error
+    } else {
+      throw error;
+    }
   }
 };

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IRole } from "../models/role.model";
+import { JwtPayload } from "jsonwebtoken";
 
 export interface AuthRequestBody {
     username: string;
@@ -15,3 +16,6 @@ export interface TokenPayload {
 export interface ResponseItem<T> {
     data: T
 }
+
+
+

@@ -8,6 +8,7 @@ import { errorHandler, routNotFound } from './handlers/exception.handler';
 import morgan from 'morgan';
 import cors from 'cors';
 import generalRoutes from './routes/general.routes';
+import documentsRoutes from './routes/documents.routes';
 
 
 dotenv.config();
@@ -24,6 +25,8 @@ app.use('/auth', authRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/general',authenticateToken, generalRoutes);
+app.use('/document',authenticateToken, documentsRoutes);
+
 
 app.use('/users', authenticateToken, authorize(['manage_users']), userRoutes);
 

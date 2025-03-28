@@ -8,8 +8,8 @@ dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY || '';
 
-interface AuthenticatedRequest extends Request {
-    user?: JwtPayload | string;
+export interface AuthenticatedRequest extends Request {
+    user?:  IUser;
 }
 
 
@@ -22,7 +22,7 @@ export const authenticateToken: RequestHandler = (req: AuthenticatedRequest, res
     }
 
     try {
-        const verified = jwt.verify(token, SECRET_KEY);
+        const verified: IUser = jwt.verify(token, SECRET_KEY) as IUser;
         req.user = verified;
         next();
     } catch (error) {

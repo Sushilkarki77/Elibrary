@@ -2,12 +2,19 @@ import { RequestHandler } from "express";
 import { IRole } from "../models/role.model";
 import { findUserByUsername } from "../models/user.model";
 import { ResponseItem } from "../interfaces/interfaces";
+import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 
-export const getNavItems: RequestHandler<unknown, ResponseItem<{name: string, path: string}[]> | Error > = async (req, res, next) => {
+export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, path: string }[]> | Error> = async (req, res, next) => {
     try {
-        const user = await findUserByUsername((req as any).user.username);
+        const userName = (req as AuthenticatedRequest)?.user?.username;
+
+        if (!userName) {
+            res.status(404).json({ name: 'error', message: 'User not found' });
+            return;
+        }
+        const user = await findUserByUsername(userName);
         if (!user) {
-            res.status(404).json({name: 'error', message: 'User not found' });
+            res.status(404).json({ name: 'error', message: 'User not found' });
             return;
         }
 
@@ -18,11 +25,11 @@ export const getNavItems: RequestHandler<unknown, ResponseItem<{name: string, pa
 
         const userNav = [
             { name: 'Dashboard', path: '/dashboard' },
-           
+
         ];
 
         const navItems = (user.role as IRole).name === 'admin' ? adminNav : userNav;
-        res.status(200).json({data: navItems});
+        res.status(200).json({ data: navItems });
         return;
     } catch (error) {
         return next(error);
