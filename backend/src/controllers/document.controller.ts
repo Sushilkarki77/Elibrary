@@ -60,7 +60,7 @@ export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName
 }
 
 
-export const deleteDocumentHandler: RequestHandler<{ documentId: string }, unknown, unknown> = async (req, res, next) => {
+export const deleteDocumentHandler: RequestHandler<{ documentId: string }, ResponseItem<{ message: string }> | Error, unknown> = async (req, res, next) => {
     try {
         const userName = (req as AuthenticatedRequest)?.user?.username;
         const { documentId } = req.params;
@@ -84,7 +84,7 @@ export const deleteDocumentHandler: RequestHandler<{ documentId: string }, unkno
 
         const documentToBeDeleted = await getDocumentById(documentId);
 
-        if(documentToBeDeleted?.userId?.toString() !== user?._id?.toString()) {
+        if (documentToBeDeleted?.userId?.toString() !== user?._id?.toString()) {
             res.status(401).json({ name: 'error', message: 'Document not found or not authorized' });
             return;
         }
@@ -96,7 +96,7 @@ export const deleteDocumentHandler: RequestHandler<{ documentId: string }, unkno
             return;
         }
 
-        res.status(200).json({ message: 'Document deleted successfully' });
+        res.status(200).json({ data: { message: 'Document deleted successfully' } });
     } catch (error) {
         return next(error);
     }
