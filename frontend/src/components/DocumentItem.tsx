@@ -3,10 +3,12 @@ import { Document } from '../interfaces/interfaces';
 import { formatDate } from '../utils';
 
 type DocumentProps = {
-    document: Document
+    document: Document,
+    onDeleteClick: (documentId: string) => void
 }
 
-const DocumentItem: React.FC<DocumentProps> = ({ document }) => {
+const DocumentItem: React.FC<DocumentProps> = ({ document, onDeleteClick }) => {
+
 
     return (
         <tr className="border-b border-gray-300 hover:bg-gray-50">
@@ -23,7 +25,7 @@ const DocumentItem: React.FC<DocumentProps> = ({ document }) => {
                     Generate Quiz
                 </button>
 
-                <button className="px-2 py-1 text-xs border-2 border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-200">
+                <button onClick={() => onDeleteClick(document._id)} className="px-2 py-1 text-xs border-2 border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-200">
                     Delete
                 </button>
 

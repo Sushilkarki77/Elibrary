@@ -1,17 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { Document } from '../interfaces/interfaces';
-import { getDocuments } from '../services/httpService';
+import { deleteDocuments, getDocuments } from '../services/httpService';
 import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
+import FileUpload from './FileUpload';
+
 
 
 const DocumentsList: React.FC = () => {
     const [documents, setDocuments] = useState<Document[] | null>(null);
     const [overLayVisibility, setOverlayVisibility] = useState(false);
 
+    const fileUploadSuccess = (document: Document) => {
+        setDocuments((x) => [...x || [], document]);
+        setOverlayVisibility(false);
+    }
+
     useEffect(() => {
         getDocuments().then(x => setDocuments(x))
     }, []);
+
+    const handleDeleteClick = (documentId: string) => {
+        const userResponse = window.confirm("Are you sure you want to delete?");
+        if (!userResponse) {
+            return;
+        }
+
+        deleteDocuments(documentId).then(x => {
+            if (documents) {
+                setDocuments(prev => prev?.filter(doc => doc._id !== documentId) || []);
+                console.log(x);
+                window.alert(x.message)
+            }
+        }).catch(x =>
+            window.alert(x)
+        );
+    }
 
 
     return (
@@ -30,11 +54,11 @@ const DocumentsList: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} />)}
+                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDeleteClick={handleDeleteClick} />)}
                     </tbody>
                 </table>
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
-                    <div>This is overlay body!</div>
+                    <FileUpload onUploadSuccess={fileUploadSuccess} />
                 </Overlay>
             </div>
 

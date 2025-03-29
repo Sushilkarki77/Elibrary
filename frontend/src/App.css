@@ -56,11 +56,11 @@ body {
     @apply px-3 py-1.5 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-300;
   }
   .btn {
-    @apply px-4 py-2 rounded-3xl transition duration-300;
+    @apply px-4 py-2 rounded transition duration-300;
   }
 
   .btn-sm {
-    @apply px-2 py-1 rounded-3xl transition duration-300;
+    @apply px-2 py-1  transition duration-300;
 
   }
 
@@ -71,7 +71,7 @@ body {
   
 
   .btn-primary {
-    @apply  text-white bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 hover:shadow-lg;
+    @apply  px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white hover:shadow-lg;
   }
 
   .btn-success {

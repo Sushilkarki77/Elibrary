@@ -31,6 +31,9 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
+    if (config.headers['Content-Type'] === 'multipart/form-data') {
+      delete config.headers['Content-Type'];
+    }
     return config;
   },
   (error: AxiosError) => {
@@ -54,9 +57,9 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
 
-   
+
     if (error.response && error.response.status === 403) {
-      window.location.href = '/login'; 
+      window.location.href = '/login';
       localStorage.removeItem(TOKEN_KEY);
 
     }
@@ -78,6 +81,11 @@ export const loginRequest = async (username: string, password: string): Promise<
   }
 };
 
+export const fileUpload = async (formData: FormData): Promise<Document> => {
+  const uploadedDoc: Document = await uploadFileRequest('documents/upload-pdf', formData);
+  return uploadedDoc;
+}
+
 
 export const getNavItems = async (): Promise<{ name: string, path: string }[]> => {
   const navItems: { name: string, path: string }[] = await getData('/general/nav-items');
@@ -86,6 +94,11 @@ export const getNavItems = async (): Promise<{ name: string, path: string }[]> =
 
 export const getDocuments = async (): Promise<Document[]> => {
   const documents: Document[] = await getData('/documents');
+  return documents;
+}
+
+export const deleteDocuments = async (documentId: string): Promise<{message: string}> => {
+  const documents: {message: string} = await deleteData(`/documents/${documentId}`);
   return documents;
 }
 
@@ -102,9 +115,9 @@ export const getData = async <T>(endpoint: string): Promise<T> => {
   }
 };
 
-export const postData = async <T>(endpoint: string, data: T): Promise<T> => {
+export const postData = async <T, R = T>(endpoint: string, data: T): Promise<R> => {
   try {
-    const response: AxiosResponse<ApiResponse<T>> = await apiClient.post(endpoint, data);
+    const response: AxiosResponse<ApiResponse<R>> = await apiClient.post(endpoint, data);
     return response.data.data;
   } catch (error) {
     if (error instanceof Error) {
@@ -114,3 +127,34 @@ export const postData = async <T>(endpoint: string, data: T): Promise<T> => {
     }
   }
 };
+
+export const deleteData = async <T, R = T>(endpoint: string): Promise<R> => {
+  try {
+    const response: AxiosResponse<ApiResponse<R>> = await apiClient.delete(endpoint);
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    } else {
+      throw error;
+    }
+  }
+};
+
+
+export const uploadFileRequest = async <T, R = T>(endpoint: string, data: T): Promise<R> => {
+  try {
+    const response: AxiosResponse<ApiResponse<R>> = await apiClient.post(endpoint, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    } else {
+      throw error;
+    }
+  }
+}
