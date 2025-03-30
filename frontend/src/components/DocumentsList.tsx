@@ -10,6 +10,7 @@ import FileUpload from './FileUpload';
 const DocumentsList: React.FC = () => {
     const [documents, setDocuments] = useState<Document[] | null>(null);
     const [overLayVisibility, setOverlayVisibility] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const fileUploadSuccess = (document: Document) => {
         setDocuments((x) => [...x || [], document]);
@@ -17,7 +18,11 @@ const DocumentsList: React.FC = () => {
     }
 
     useEffect(() => {
-        getDocuments().then(x => setDocuments(x))
+        setLoading(true);
+        getDocuments().then(x => {
+            setDocuments(x);
+            setLoading(false);
+        })
     }, []);
 
     const handleDeleteClick = (documentId: string) => {
@@ -29,12 +34,17 @@ const DocumentsList: React.FC = () => {
         deleteDocuments(documentId).then(x => {
             if (documents) {
                 setDocuments(prev => prev?.filter(doc => doc._id !== documentId) || []);
-                console.log(x);
                 window.alert(x.message)
             }
         }).catch(x =>
             window.alert(x)
         );
+    }
+
+    if (loading) {
+        return (<>
+            <div className='text-center'>Loading...</div>
+        </>)
     }
 
 
@@ -45,7 +55,8 @@ const DocumentsList: React.FC = () => {
                     <label className='mb-3'>Documents</label>
                     <button className='px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200' onClick={() => setOverlayVisibility(true)}>Add +</button>
                 </div>
-                <table className="min-w-full table-auto border-collapse border shadow-sm border-gray-100 bg-white rounded-lg">
+
+                {documents.length === 0 ? <div className='text-center'>No Documents!</div> : <table className="min-w-full table-auto border-collapse border shadow-sm border-gray-100 bg-white rounded-lg">
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Title</th>
@@ -57,6 +68,7 @@ const DocumentsList: React.FC = () => {
                         {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDeleteClick={handleDeleteClick} />)}
                     </tbody>
                 </table>
+                }
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
                     <FileUpload onUploadSuccess={fileUploadSuccess} />
                 </Overlay>

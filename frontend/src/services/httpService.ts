@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
-import { Document } from '../interfaces/interfaces';
+import { Document, User } from '../interfaces/interfaces';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'userToken';
@@ -100,6 +100,21 @@ export const getDocuments = async (): Promise<Document[]> => {
 export const deleteDocuments = async (documentId: string): Promise<{message: string}> => {
   const documents: {message: string} = await deleteData(`/documents/${documentId}`);
   return documents;
+}
+
+export const deleteUsers = async (userId: string): Promise<{message: string}> => {
+  const documents: {message: string} = await deleteData(`/users/${userId}`);
+  return documents;
+}
+
+export const registerUser = async (user: {username: string, password: string}): Promise<User> => {
+  const addedUser:  {user: User, message: string} = await postData(`/auth/register`, user);
+  return addedUser.user;
+}
+
+export const getUsers = async (): Promise<User[]> => {
+   const users: User[] = await getData(`/users`);
+   return users;
 }
 
 export const getData = async <T>(endpoint: string): Promise<T> => {

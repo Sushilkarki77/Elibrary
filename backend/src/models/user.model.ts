@@ -44,7 +44,7 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
 export const UserModel = mongoose.model<IUser>('User', UserSchema);
 
 export const getAllUsers = async (): Promise<IUser[] | null> => {
-    const users: IUser[] = await UserModel.find().exec();
+    const users: IUser[] = await UserModel.find().populate('role').exec();
     return users;
 }
 
