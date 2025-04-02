@@ -3,6 +3,7 @@ import { addDocumentHandler, confirmUpload, deleteDocumentHandler, getDocumentsB
 import { validateRequest } from '../middlewares/requestValidator.middleware';
 import { documentSchema } from '../middlewares/schemas';
 import { upload } from '../config/multerConfig';
+import { getDocumentQuiz, getDocumentSummary } from '../controllers/documentProcessing.controller';
 
 const router = express.Router();
 
@@ -13,8 +14,8 @@ router.post("/upload-pdfs", upload.array("files", 5), uploadMultiplePDFs);
 router.post('/', validateRequest(documentSchema), addDocumentHandler);
 router.get('/', getDocumentsByUserIdHandler);
 router.delete('/:documentId', deleteDocumentHandler);
-
-
+router.get('/summary/:documentId', getDocumentSummary);
+router.get('/quiz/:documentId', getDocumentQuiz);
 
 
 export default router;

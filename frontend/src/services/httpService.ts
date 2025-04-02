@@ -102,6 +102,17 @@ export const deleteDocuments = async (documentId: string): Promise<{message: str
   return documents;
 }
 
+
+export const getDocumentSummary = async (documentId: string): Promise<{message: string}> => {
+  const documents: {message: string} = await getData(`/documents/summary/${documentId}`);
+  return documents;
+}
+
+export const getDocumentQuiz = async (documentId: string): Promise<{message: string}> => {
+  const documents: {message: string} = await getData(`/documents/quiz/${documentId}`);
+  return documents;
+}
+
 export const deleteUsers = async (userId: string): Promise<{message: string}> => {
   const documents: {message: string} = await deleteData(`/users/${userId}`);
   return documents;

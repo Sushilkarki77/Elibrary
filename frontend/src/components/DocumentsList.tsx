@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Document } from '../interfaces/interfaces';
-import { deleteDocuments, getDocuments } from '../services/httpService';
+import { deleteDocuments, getDocumentQuiz, getDocuments, getDocumentSummary } from '../services/httpService';
 import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
 import FileUpload from './FileUpload';
@@ -41,6 +41,14 @@ const DocumentsList: React.FC = () => {
         );
     }
 
+    const generateSummary = (documentId: string) => {
+        getDocumentSummary(documentId).then(x => console.log(x));
+    }
+
+    const generateQuiz = (documentId: string) => {
+        getDocumentQuiz(documentId).then(x => console.log(x));
+    }
+
     if (loading) {
         return (<>
             <div className='text-center'>Loading...</div>
@@ -65,7 +73,7 @@ const DocumentsList: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDeleteClick={handleDeleteClick} />)}
+                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
                     </tbody>
                 </table>
                 }

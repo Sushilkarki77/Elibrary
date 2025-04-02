@@ -1,0 +1,68 @@
+import { RequestHandler } from "express";
+import { ResponseItem } from "../interfaces/interfaces";
+import { getDocumentById } from "../models/document.model";
+import { handleQuizGeneration, handleSummaryGeneration } from "../services/filesProcessing.service";
+
+
+export const getDocumentSummary: RequestHandler<{ documentId: string }, ResponseItem<{ summary: string }> | Error> = async (req, res, next) => {
+
+
+    try {
+        const { documentId } = req.params;
+
+        if (!documentId) {
+            res.status(200).json({ name: 'error', message: 'Invalid document id' });
+        }
+
+        const document = await getDocumentById(documentId);
+
+
+        if (!document) {
+            res.status(404).json({ name: 'error', message: 'Document does not exist' });
+            return;
+        }
+
+        const summary: string | null = await handleSummaryGeneration(document.documentName);
+
+        if (!summary) {
+            res.status(404).json({ name: 'error', message: 'Coud not generate summary' });
+            return;
+        }
+        res.status(200).json({ data: { summary } })
+    } catch (error) {
+        next(error);
+
+    }
+}
+
+
+export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseItem<{ summary: string }> | Error> = async (req, res, next) => {
+
+
+    try {
+        const { documentId } = req.params;
+
+        if (!documentId) {
+            res.status(200).json({ name: 'error', message: 'Invalid document id' });
+        }
+
+        const document = await getDocumentById(documentId);
+
+
+        if (!document) {
+            res.status(404).json({ name: 'error', message: 'Document does not exist' });
+            return;
+        }
+
+        const summary: string | null = await handleQuizGeneration(document.documentName);
+
+        if (!summary) {
+            res.status(404).json({ name: 'error', message: 'Coud not generate summary' });
+            return;
+        }
+        res.status(200).json({ data: { summary } })
+    } catch (error) {
+        next(error);
+
+    }
+}
