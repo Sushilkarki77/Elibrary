@@ -4,6 +4,7 @@ import { deleteDocuments, getDocumentQuiz, getDocuments, getDocumentSummary } fr
 import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
 import FileUpload from './FileUpload';
+import { useNavigate } from 'react-router';
 
 
 
@@ -12,6 +13,7 @@ const DocumentsList: React.FC = () => {
     const [overLayVisibility, setOverlayVisibility] = useState(false);
     const [loading, setLoading] = useState(false);
     const [proessingPoc, setProcessingDoc] = useState(false);
+    const navigate = useNavigate()
 
     const fileUploadSuccess = (document: Document) => {
         setDocuments((x) => [...x || [], document]);
@@ -53,9 +55,9 @@ const DocumentsList: React.FC = () => {
     const generateQuiz = (documentId: string) => {
         setProcessingDoc(true);
 
-        getDocumentQuiz(documentId).then(x => {
-            setProcessingDoc(false)
-            console.log(x);
+        getDocumentQuiz(documentId).then(res => {
+            setProcessingDoc(false);
+            navigate('/quiz', { state: res  })
         });
     }
 
@@ -74,7 +76,7 @@ const DocumentsList: React.FC = () => {
                     <button className='px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200' onClick={() => setOverlayVisibility(true)}>Add +</button>
                 </div>
 
-                {documents.length === 0 ? <div className='text-center'>No Documents!</div> : <table className="min-w-full table-auto border-collapse border shadow-sm border-gray-100 bg-white rounded-lg">
+                {documents.length === 0 ? <div className='text-center'>No Documents!</div> : <table className="min-w-full table-auto border-collapse border  border-gray-300 bg-white rounded-lg">
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Title</th>

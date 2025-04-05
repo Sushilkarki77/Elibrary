@@ -8,6 +8,7 @@ import { AuthProvider } from './context/auth.context'
 import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
 import UsersList from './components/UsersList'
 import DocumentsList from './components/DocumentsList'
+import QuizComponent from './components/QuizComponent'
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path='/dashboard' element={<DocumentsList />} />
                 <Route path='/users' element={<UsersList />} />
+
+                <Route path='/quiz' element={<QuizComponent />} />
               </Route>
             </Route>
 

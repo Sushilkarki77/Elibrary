@@ -12,8 +12,8 @@ const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess}) => {
     const [file, setFile] = useState<File | null>();
     const [formError, setError] = useState<string>();
     const [isUploading, setIsUploading] = useState(false);
-    const [_uploadSuccess, setUploadSuccess] = useState(false);
-    const [_uploadError, setUploadError] = useState<string | null>(null);
+    const [, setUploadSuccess] = useState(false);
+    const [, setUploadError] = useState<string | null>(null);
 
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {

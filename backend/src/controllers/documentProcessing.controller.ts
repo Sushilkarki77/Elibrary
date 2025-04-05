@@ -36,7 +36,7 @@ export const getDocumentSummary: RequestHandler<{ documentId: string }, Response
 }
 
 
-export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseItem<{ quiz: QuizQuestion[] }> | Error> = async (req, res, next) => {
+export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseItem<QuizQuestion[]> | Error> = async (req, res, next) => {
 
 
     try {
@@ -63,9 +63,9 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
 
         const cleanedString = summary.replace(/^```json\n/, '').replace(/\n```$/, '');
 
-        const quiz: QuizQuestion[] = JSON.parse(cleanedString);
+        const questions: QuizQuestion[] = JSON.parse(cleanedString);
 
-        res.status(200).json({ data: { quiz } })
+        res.status(200).json({ data:  questions  })
     } catch (error) {
         next(error);
 

@@ -18,3 +18,13 @@ export interface Role {
     name: 'admin' | 'user';
     permissions: string[];
 }
+
+type AnswerOption = string;
+
+export interface QuizQuestion {
+    question: string;
+    options: [string, string, string, string];
+    answer: AnswerOption;
+}
+
+export type Quiz = { quiz: QuizQuestion[] };

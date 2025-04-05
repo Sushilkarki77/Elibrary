@@ -18,7 +18,7 @@ type AnswerOption = string;
 
 export interface QuizQuestion {
   question: string;
-  options: [string, string, string, string]; // Tuple for exactly 4 options
+  options: [string, string, string, string]; 
   answer: AnswerOption;
 }
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
-import { Document, User } from '../interfaces/interfaces';
+import { Document, QuizQuestion, User } from '../interfaces/interfaces';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'userToken';
@@ -108,8 +108,8 @@ export const getDocumentSummary = async (documentId: string): Promise<{message: 
   return documents;
 }
 
-export const getDocumentQuiz = async (documentId: string): Promise<{message: string}> => {
-  const documents: {message: string} = await getData(`/documents/quiz/${documentId}`);
+export const getDocumentQuiz = async (documentId: string): Promise<QuizQuestion[]> => {
+  const documents: QuizQuestion[] = await getData(`/documents/quiz/${documentId}`);
   return documents;
 }
 

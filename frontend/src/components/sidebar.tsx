@@ -24,7 +24,7 @@ const Sidebar: React.FC = () => {
 
             <div className="w-36 shadow-lg bg-white text-gray-700  border-r border-gray-300 flex flex-col">
 
-                <h3 className="text-2xl text-left p-3 font-bold text-gray-800">Elibrary</h3>
+                <h3 className="text-2xl text-left p-3 font-bold text-gray-800 italic">Elibrary</h3>
                 <ul className="mt-6">
 
                     {navItems && navItems?.map(item =>
@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
                             <NavLink
                                 to={item.path}
                                 className={({ isActive }) =>
-                                    `${isActive ? 'nav-link-active' : ''} nav-link border-b border-gray-300 w-full`
+                                    `${isActive ? 'nav-link-active' : ''} nav-link border-t border-b border-gray-300 w-full`
                                 }
                             >{item.name}</NavLink>
                         </li>
@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
 
                 </ul>
                 <div className='mt-auto text-left'>
-                    <button className="hover:bg-gray-100 block p-2 w-full text-left" onClick={handleLogut}>Log out</button>
+                    <button className="hover:bg-gray-100 block p-2 w-full  border-t border-b border-gray-300  text-left" onClick={handleLogut}>Log out</button>
                 </div>
             </div>
 
