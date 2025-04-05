@@ -11,6 +11,7 @@ const DocumentsList: React.FC = () => {
     const [documents, setDocuments] = useState<Document[] | null>(null);
     const [overLayVisibility, setOverlayVisibility] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [proessingPoc, setProcessingDoc] = useState(false);
 
     const fileUploadSuccess = (document: Document) => {
         setDocuments((x) => [...x || [], document]);
@@ -42,11 +43,20 @@ const DocumentsList: React.FC = () => {
     }
 
     const generateSummary = (documentId: string) => {
-        getDocumentSummary(documentId).then(x => console.log(x));
+        setProcessingDoc(true);
+        getDocumentSummary(documentId).then(x => {
+            setProcessingDoc(false);
+            console.log(x)
+        });
     }
 
     const generateQuiz = (documentId: string) => {
-        getDocumentQuiz(documentId).then(x => console.log(x));
+        setProcessingDoc(true);
+
+        getDocumentQuiz(documentId).then(x => {
+            setProcessingDoc(false)
+            console.log(x);
+        });
     }
 
     if (loading) {
@@ -79,6 +89,9 @@ const DocumentsList: React.FC = () => {
                 }
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
                     <FileUpload onUploadSuccess={fileUploadSuccess} />
+                </Overlay>
+                <Overlay isOpen={proessingPoc} onClose={() => {}} displayCloseButton={false} >
+                    <div>Processing...</div>
                 </Overlay>
             </div>
 

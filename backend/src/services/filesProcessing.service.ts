@@ -88,7 +88,7 @@ export const readFileFronStorage = async (fileName: string) => {
 }
 
 // (async () => {
-//     const blob = await readFile(path.join('uploads/file-1743382128819-599593192.pdf'));
+//     const blob = await readFile(path.join('file-1743382128819-599593192.pdf'));
 //     const extractedContents: Result = await extractTextContents(blob);
 //     generateSummary(extractedContents.text);
 // })()

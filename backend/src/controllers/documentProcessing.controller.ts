@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { ResponseItem } from "../interfaces/interfaces";
+import { QuizQuestion, ResponseItem } from "../interfaces/interfaces";
 import { getDocumentById } from "../models/document.model";
 import { handleQuizGeneration, handleSummaryGeneration } from "../services/filesProcessing.service";
 
@@ -36,7 +36,7 @@ export const getDocumentSummary: RequestHandler<{ documentId: string }, Response
 }
 
 
-export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseItem<{ summary: string }> | Error> = async (req, res, next) => {
+export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseItem<{ quiz: QuizQuestion[] }> | Error> = async (req, res, next) => {
 
 
     try {
@@ -60,7 +60,12 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
             res.status(404).json({ name: 'error', message: 'Coud not generate summary' });
             return;
         }
-        res.status(200).json({ data: { summary } })
+
+        const cleanedString = summary.replace(/^```json\n/, '').replace(/\n```$/, '');
+
+        const quiz: QuizQuestion[] = JSON.parse(cleanedString);
+
+        res.status(200).json({ data: { quiz } })
     } catch (error) {
         next(error);
 

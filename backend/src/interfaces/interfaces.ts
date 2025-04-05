@@ -13,6 +13,15 @@ export interface TokenPayload {
     role: mongoose.Types.ObjectId | IRole;
 }
 
+
+type AnswerOption = string;
+
+export interface QuizQuestion {
+  question: string;
+  options: [string, string, string, string]; // Tuple for exactly 4 options
+  answer: AnswerOption;
+}
+
 export interface ResponseItem<T> {
     data: T
 }
