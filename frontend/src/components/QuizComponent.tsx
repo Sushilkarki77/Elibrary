@@ -12,6 +12,7 @@ const QuizComponent: React.FC = () => {
     const [questions, setQuiz] = useState<QuizQuestion[] | null>(null)
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [correctCount, setCorrectCount] = useState(0);
+    const [currentQuestionAnswered, setCurrentQuestionAnswered] = useState(false)
 
 
     useEffect(() => {
@@ -28,10 +29,15 @@ const QuizComponent: React.FC = () => {
     }
 
     const handleNextClick = () => {
-        if (activeQuestion < questions?.length) {
+        if (activeQuestion < questions?.length - 1) {
             setActiveQuestion(activeQuestion + 1);
-            setCorrectCount(correctCount + 1);
+            setCurrentQuestionAnswered(false);
         }
+    }
+
+    const handleOnOptionSelect = (status: boolean, value: boolean) => {
+        setCorrectCount(value == true ? correctCount + 1 : correctCount);
+        setCurrentQuestionAnswered(status);
     }
 
     return (
@@ -39,7 +45,7 @@ const QuizComponent: React.FC = () => {
 
             <div className="flex gap-4 text-sm font-semibold text-gray-700 mb-2">
                 <div>
-                    Question <span className="text-blue-600">{activeQuestion}</span> /  <span className="text-blue-600">{questions?.length}</span>
+                    Question <span className="text-blue-600">{activeQuestion + 1}</span> /  <span className="text-blue-600">{questions?.length}</span>
                 </div>
 
                 <div>
@@ -48,16 +54,17 @@ const QuizComponent: React.FC = () => {
 
             </div>
 
-            <QuizItem question={questions[activeQuestion]} />
+            <QuizItem question={questions[activeQuestion]} onOptionSelect={(status, value) => handleOnOptionSelect(status, value)} />
 
-            <div className="flex gap-2 mt-3 border border-gray-300 p-2">
-
-
-                <button onClick={() => handleNextClick()} className="px-2 py-1 text-xs border-2  border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200">
-                    Next
-                </button>
-
-            </div>
+             <> {
+                currentQuestionAnswered &&
+                <div className="flex gap-2 mt-3 border border-gray-300 p-2">
+                    <button onClick={() => handleNextClick()} className="px-2 py-1 text-xs border-2  border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200">
+                        Next
+                    </button>
+                </div>
+               }
+            </>
 
         </div>
         }

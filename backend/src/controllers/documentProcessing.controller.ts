@@ -47,6 +47,7 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
         }
 
         const document = await getDocumentById(documentId);
+        
 
 
         if (!document) {

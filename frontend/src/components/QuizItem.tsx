@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { QuizQuestion } from '../interfaces/interfaces';
+import OptionItem from './UI/OptionItem';
 
 type QuestionComponentProps = {
     question: QuizQuestion
+    onOptionSelect: (status: boolean, value: boolean) => void
 }
 
-const QuizItem: React.FC<QuestionComponentProps> = ({ question }) => {
+const QuizItem: React.FC<QuestionComponentProps> = ({ question, onOptionSelect }) => {
+
+    const [optionSelected, setOptionSelected] = useState(false);
+
+    const handleOnOptionSelect = (isCorrect: boolean) => {
+        setOptionSelected(true)
+        onOptionSelect(true, isCorrect)
+    }
+
+    useEffect(() => {
+        setOptionSelected(false);
+    }, [question])
+
     return (<>
         <div className="quizBody space-y-4 border p-4 border-gray-300">
 
@@ -15,14 +29,9 @@ const QuizItem: React.FC<QuestionComponentProps> = ({ question }) => {
 
             <div className="space-y-3 ">
                 {
-                    question.options.map(x => {
-                        return <>
-                            <label className="flex cursor-pointer space-x-2 border rounded-sm p-2 bord border-gray-300 hover:bg-gray-50" key={x}>
-                                <input type="radio" name="option" value="Paris" className="accent-blue-600 w-max outline-none focus:outline-none focus:ring-0" />
-                                <span>{x}</span>
-                            </label>
-                        </>
-                    })
+                    question.options.map((x, index) => (
+                        <OptionItem key={x + index} option={x} correctOption={question.answer} optionSelected={optionSelected} onOptionSelect={(isCorrect) => handleOnOptionSelect(isCorrect)} />
+                    ))
                 }
             </div>
 
@@ -31,3 +40,4 @@ const QuizItem: React.FC<QuestionComponentProps> = ({ question }) => {
 }
 
 export default QuizItem;
+

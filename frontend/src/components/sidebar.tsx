@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
 
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100">
 
             <div className="w-36 shadow-lg bg-white text-gray-700  border-r border-gray-300 flex flex-col">
 
