@@ -4,7 +4,7 @@ import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 import { findUserByUsername, IUser } from "../models/user.model";
 import { addDocument, deleteDocumentById, getDocumentById, getDocumentsByUserId, IDocument } from "../models/document.model";
 import mongoose from "mongoose";
-import { uploadBufferToS3 } from "../services/s3Service";
+import { deleteFileFromS3, uploadBufferToS3 } from "../services/s3Service";
 
 
 
@@ -97,12 +97,16 @@ export const deleteDocumentHandler: RequestHandler<{ documentId: string }, Respo
             return;
         }
 
+
         const documentDeleted = await deleteDocumentById(new mongoose.Types.ObjectId(documentId));
 
         if (!documentDeleted) {
             res.status(404).json({ name: 'error', message: 'Document not found or not authorized' });
             return;
         }
+
+        await deleteFileFromS3(documentDeleted.documentName);
+
 
         res.status(200).json({ data: { message: 'Document deleted successfully' } });
     } catch (error) {
