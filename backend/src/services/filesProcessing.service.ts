@@ -48,7 +48,7 @@ export const generateSummary = async (text: string): Promise<string | null> => {
 
 export const generateQuiz = (text: string): Promise<string | null> => {
   const numberOfQuestions = 20;
-  const prompt = `Generate ${numberOfQuestions} multiple choice questions based on the following text content:\n\n${text}\n\nReturn the questions in JSON format. Each question should have the following structure:\n\n{\n  "question": "[Question text]",\n  "options": ["Option A", "Option B", "Option C", "Option D"],\n  "answer": "[Correct option letter]"\n}\n\nReturn the entire set of questions as a JSON array.`;
+  const prompt = `Generate ${numberOfQuestions} multiple choice questions based on the following text content:\n\n${text}\n\nReturn the questions in JSON format. Each question should have the following structure:\n\n{\n  "question": "[Question text]",\n  "options": ["Option A", "Option B", "Option C", "Option D"],\n  "answer": "[Correct answer]"\n}\n\nReturn the entire set of questions as a JSON array.`;
   const extractedText = extractContents(text, prompt);
   return extractedText;
 }
