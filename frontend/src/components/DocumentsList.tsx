@@ -46,9 +46,12 @@ const DocumentsList: React.FC = () => {
 
     const generateSummary = (documentId: string) => {
         setProcessingDoc(true);
-        getDocumentSummary(documentId).then(x => {
+        getDocumentSummary(documentId).then(() => {
             setProcessingDoc(false);
-            console.log(x)
+        }).catch((err) => {
+            console.log(err);
+            window.alert(err.message)
+            setProcessingDoc(false);
         });
     }
 
@@ -58,7 +61,11 @@ const DocumentsList: React.FC = () => {
         getDocumentQuiz(documentId).then(res => {
             setProcessingDoc(false);
             navigate('/quiz', { state: res })
-        });
+        }).catch((err) => {
+            console.log(err);
+            window.alert(err.message)
+            setProcessingDoc(false);
+        });;
     }
 
     if (loading) {
