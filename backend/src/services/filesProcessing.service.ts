@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import pdf, { Result } from 'pdf-parse';
 import { GoogleGenerativeAI } from "generative-ai";
+import { downloadFileBuffer } from './s3Service';
 
 
 const readFile = async (filePath: string): Promise<Buffer> => {
@@ -55,7 +56,10 @@ export const generateQuiz = (text: string): Promise<string | null> => {
 
 export const handleSummaryGeneration = async (filename: string): Promise<string | null> => {
   try {
-    const blob = await readFileFronStorage(filename);
+    const blob = await downloadFileBuffer(filename);
+    if(!blob) {
+      throw new Error('Error reading file');
+    }
     const extractedContents: Result = await extractTextContents(blob);
     const summaryText = await generateSummary(extractedContents.text);
     return summaryText;
@@ -68,7 +72,10 @@ export const handleSummaryGeneration = async (filename: string): Promise<string 
 
 export const handleQuizGeneration = async (filename: string): Promise<string | null> => {
   try {
-    const blob = await readFileFronStorage(filename);
+    const blob = await downloadFileBuffer(filename);
+    if(!blob) {
+      throw new Error('Error reading file');
+    }
     const extractedContents: Result = await extractTextContents(blob);
     const summaryText = await generateQuiz(extractedContents.text);
     return summaryText;

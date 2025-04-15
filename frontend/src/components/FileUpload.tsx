@@ -5,10 +5,11 @@ import { Document } from '../interfaces/interfaces';
 
 type FileUploadProps = {
     onUploadSuccess: (document: Document) => void
+    onUploadError:() => void;
 }
 
 
-const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess}) => {
+const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess, onUploadError}) => {
     const [file, setFile] = useState<File | null>();
     const [formError, setError] = useState<string>();
     const [isUploading, setIsUploading] = useState(false);
@@ -59,6 +60,7 @@ const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess}) => {
         } catch (error) {
             if(error instanceof Error) {
                 setUploadError(error.message);
+                onUploadError()
                 window.alert(error.message)
             }
         }

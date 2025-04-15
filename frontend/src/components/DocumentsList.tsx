@@ -57,7 +57,7 @@ const DocumentsList: React.FC = () => {
 
         getDocumentQuiz(documentId).then(res => {
             setProcessingDoc(false);
-            navigate('/quiz', { state: res  })
+            navigate('/quiz', { state: res })
         });
     }
 
@@ -90,9 +90,9 @@ const DocumentsList: React.FC = () => {
                 </table>
                 }
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
-                    <FileUpload onUploadSuccess={fileUploadSuccess} />
+                    <FileUpload onUploadSuccess={fileUploadSuccess} onUploadError={() => setOverlayVisibility(false)} />
                 </Overlay>
-                <Overlay isOpen={proessingPoc} onClose={() => {}} displayCloseButton={false} >
+                <Overlay isOpen={proessingPoc} onClose={() => { }} displayCloseButton={false} >
                     <div>Processing...</div>
                 </Overlay>
             </div>

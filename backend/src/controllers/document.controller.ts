@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 import { findUserByUsername, IUser } from "../models/user.model";
 import { addDocument, deleteDocumentById, getDocumentById, getDocumentsByUserId, IDocument } from "../models/document.model";
 import mongoose from "mongoose";
+import { uploadBufferToS3 } from "../services/s3Service";
 
 
 
@@ -49,8 +50,15 @@ export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName
             return;
         }
 
+        if(!req.file) {
+            res.status(401).json({ name: 'error', message: 'No attachment found' });
+            return; 
+        }
 
-        const document = await addDocument(user, tempDocument.documentName, tempDocument.documentLabel);
+        const s3Filename = await uploadBufferToS3(req.file);
+
+
+        const document = await addDocument(user, s3Filename, tempDocument.documentLabel);
 
         res.status(200).json({ data: document })
     } catch (error) {
@@ -110,7 +118,7 @@ export const confirmUpload: RequestHandler = (req, res, next) => {
             res.status(400).json({ name: 'error', message: "No PDF file uploaded" });
             return;
         }
-        req.body.documentName = req.file.filename;
+        req.body.documentName = req.file.originalname;
         req.body.documentLabel = req.file.originalname;
         next();
     } catch (error) {
@@ -136,3 +144,4 @@ export const uploadMultiplePDFs: RequestHandler<unknown, ResponseItem<{ files: s
     }
 
 };
+
