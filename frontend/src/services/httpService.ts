@@ -34,7 +34,7 @@ apiClient.interceptors.request.use(
     if (config.headers['Content-Type'] === 'multipart/form-data') {
       delete config.headers['Content-Type'];
     }
-    if(config.headers['Content-Type'] === 'application/pdf') {
+    if (config.headers['Content-Type'] === 'application/pdf') {
       delete config.headers['Authorization']
     }
     return config;
@@ -110,10 +110,15 @@ export const deleteDocuments = async (documentId: string): Promise<{ message: st
   return documents;
 }
 
+export const getOriginalDocument = async (documentId: string): Promise<{ downloadURL: string }> => {
+  const res: { downloadURL: string } = await getData(`/documents/download-url/${documentId}`);
+  return res;
+}
 
-export const getDocumentSummary = async (documentId: string): Promise<{ message: string }> => {
-  const documents: { message: string } = await getData(`/documents/summary/${documentId}`);
-  return documents;
+
+export const getDocumentSummary = async (documentId: string): Promise<{ summary: string }> => {
+  const res: { summary: string } = await getData(`/documents/summary/${documentId}`);
+  return res;
 }
 
 export const getDocumentQuiz = async (documentId: string): Promise<QuizQuestion[]> => {

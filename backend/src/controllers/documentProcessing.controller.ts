@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { QuizQuestion, ResponseItem } from "../interfaces/interfaces";
 import { getDocumentById } from "../models/document.model";
 import { handleQuizGeneration, handleSummaryGeneration } from "../services/filesProcessing.service";
+import { generateDownloadUrl } from "../services/s3Service";
 
 
 export const getDocumentSummary: RequestHandler<{ documentId: string }, ResponseItem<{ summary: string }> | Error> = async (req, res, next) => {
@@ -47,8 +48,6 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
         }
 
         const document = await getDocumentById(documentId);
-        
-
 
         if (!document) {
             res.status(404).json({ name: 'error', message: 'Document does not exist' });
@@ -66,9 +65,34 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
 
         const questions: QuizQuestion[] = JSON.parse(cleanedString);
 
-        res.status(200).json({ data:  questions  })
+        res.status(200).json({ data: questions })
     } catch (error) {
         next(error);
 
+    }
+}
+
+export const getURLDownloadURL: RequestHandler<{ documentId: string }, ResponseItem<{ downloadURL: string }> | Error> = async (req, res, next) => {
+
+    try {
+        const { documentId } = req.params;
+
+        if (!documentId) {
+            res.status(200).json({ name: 'error', message: 'Invalid document id' });
+        }
+
+        const document = await getDocumentById(documentId);
+
+
+        if (!document) {
+            res.status(404).json({ name: 'error', message: 'Document does not exist' });
+            return;
+        }
+
+        const downloadURL: string = await generateDownloadUrl(document.documentName);
+
+        res.status(200).json({ data: { downloadURL } });
+    } catch (error) {
+        next(error);
     }
 }

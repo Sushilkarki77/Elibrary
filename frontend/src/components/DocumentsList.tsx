@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Document } from '../interfaces/interfaces';
-import { deleteDocuments, getDocumentQuiz, getDocuments, getDocumentSummary } from '../services/httpService';
+import { deleteDocuments, getDocumentQuiz, getDocuments, getDocumentSummary, getOriginalDocument } from '../services/httpService';
 import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
 import FileUpload from './FileUpload';
@@ -13,6 +13,9 @@ const DocumentsList: React.FC = () => {
     const [overLayVisibility, setOverlayVisibility] = useState(false);
     const [loading, setLoading] = useState(false);
     const [proessingPoc, setProcessingDoc] = useState(false);
+    const [summary, setSummary] = useState<string | null>();
+    const [downloadURL, setdownloadURL] = useState<string | null>()
+
     const navigate = useNavigate()
 
     const fileUploadSuccess = (document: Document) => {
@@ -27,6 +30,14 @@ const DocumentsList: React.FC = () => {
             setLoading(false);
         })
     }, []);
+
+
+    const displayOriginalFile = (documentId: string) => {
+        getOriginalDocument(documentId).then(res => {
+
+            setdownloadURL(res.downloadURL)
+        })
+    }
 
     const handleDeleteClick = (documentId: string) => {
         const userResponse = window.confirm("Are you sure you want to delete?");
@@ -46,7 +57,8 @@ const DocumentsList: React.FC = () => {
 
     const generateSummary = (documentId: string) => {
         setProcessingDoc(true);
-        getDocumentSummary(documentId).then(() => {
+        getDocumentSummary(documentId).then((res) => {
+            setSummary(res.summary);
             setProcessingDoc(false);
         }).catch((err) => {
             console.log(err);
@@ -92,13 +104,25 @@ const DocumentsList: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
+                        {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDisplayOriginalFile={displayOriginalFile} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
                     </tbody>
                 </table>
                 }
+
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
                     <FileUpload onUploadSuccess={fileUploadSuccess} onUploadError={() => setOverlayVisibility(false)} />
                 </Overlay>
+
+                <Overlay isOpen={summary ? true : false} onClose={() => setSummary(null)}>
+                    <div className="mt-8 text-lg text-gray-700 whitespace-pre-wrap break-words max-w-lg max-h-[500px] overflow-auto">{summary}</div>
+                </Overlay>
+
+                <Overlay isOpen={downloadURL && downloadURL ? true : false} onClose={() => setdownloadURL(null)}>
+                    <div className="mt-6 text-lg text-gray-700 whitespace-pre-wrap break-words min-w-[91vw] min-h-[70vh] -mx-[23px] overflow-auto">
+                        { downloadURL && <iframe src={downloadURL} width="100%" height={window.innerHeight * 0.9 +`px`} />}
+                    </div>
+                </Overlay>
+
                 <Overlay isOpen={proessingPoc} onClose={() => { }} displayCloseButton={false} >
                     <div>Processing...</div>
                 </Overlay>
