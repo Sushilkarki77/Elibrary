@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import {  HashRouter, Navigate, Route, Routes } from 'react-router'
 import './App.css'
 import LoginPage from './pages/login'
 import Dashboard from './pages/dashboard'
@@ -14,7 +14,7 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <AuthProvider>
           <Routes>
             <Route path='/login' element={<ProtectedLoginRoute><LoginPage /></ProtectedLoginRoute>} />
@@ -33,7 +33,7 @@ function App() {
 
           </Routes>
         </AuthProvider>
-      </BrowserRouter>
+      </HashRouter>
     </>
   )
 }

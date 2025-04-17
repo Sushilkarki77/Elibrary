@@ -1,0 +1,26 @@
+service: Elibrary-serverless-app
+
+provider:
+  name: aws
+  timeout: 300
+  runtime: nodejs18.x
+  region: "us-east-1"
+  environment:
+    PORT: "3000"
+    MONGO_URI: "mongodb+srv://sushilkarki:Elibrary@cluster0.i9rjazj.mongodb.net/?appName=Cluster0"
+    SECRET_KEY: "Elibrary"
+    GOOGLE_API_KEY: "AIzaSyD7p7Tv4sZoElXCvqvogTb4_Ryn37lzXiw"
+    S3_BUCKET_NAME: "elibrary-files-1"
+    ACCESS_KEY_ID: "AKIAU6N4A5SWTZKN77CJ"
+    SECRET_ACCESS_KEY: "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"
+
+functions:
+  api:
+    handler: dist/handler.handler 
+    events:
+      - http: ANY /
+      - http: ANY {proxy+}
+
+
+plugins:
+  - serverless-offline

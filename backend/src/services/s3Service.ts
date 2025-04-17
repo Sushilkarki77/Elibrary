@@ -14,7 +14,7 @@ export const uploadBufferToS3 = async (file: Express.Multer.File): Promise<strin
         Bucket: BUCKET,
         Key: uniqueFilename,
         Body: file.buffer,
-        ContentType: file.mimetype,
+        ContentType: 'application/pdf',
     });
 
     await s3Client.send(command);
@@ -24,7 +24,7 @@ export const uploadBufferToS3 = async (file: Express.Multer.File): Promise<strin
 
 
 export const deleteFileFromS3 = async (filename: string): Promise<void> => {  
-    console.log(filename, 'filename')
+
     const command = new DeleteObjectCommand({
       Bucket: BUCKET,
       Key: filename,
@@ -46,10 +46,13 @@ export const generateDownloadUrl = async (filename: string): Promise<string> => 
 export const downloadFileBuffer = async (
     key: string
 ): Promise<Buffer | null> => {
+
     const command = new GetObjectCommand({
         Bucket: BUCKET,
         Key: key,
     });
+
+
 
     try {
         const response: GetObjectCommandOutput = await s3Client.send(command);

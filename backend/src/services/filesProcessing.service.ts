@@ -73,6 +73,7 @@ export const handleSummaryGeneration = async (filename: string): Promise<string 
 export const handleQuizGeneration = async (filename: string): Promise<string | null> => {
   try {
     const blob = await downloadFileBuffer(filename);
+
     if(!blob) {
       throw new Error('Error reading file');
     }

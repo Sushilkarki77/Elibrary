@@ -32,9 +32,10 @@ app.use('/users', authenticateToken, authorize(['manage_users']), userRoutes);
 app.use(routNotFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
 connectDB();
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+export default app;
+
+
 
 
