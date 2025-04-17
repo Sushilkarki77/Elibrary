@@ -11,5 +11,10 @@ export const documentSchema = z.object({
     documentLabel: z.string()
 });
 
+export const fileUploadBody = z.object({
+    documentName: z.string(),
+    documentLabel: z.string()
+});
+
 export type UserSchema = z.infer<typeof userSchema>;
 export type documentSchema = z.infer<typeof documentSchema>;

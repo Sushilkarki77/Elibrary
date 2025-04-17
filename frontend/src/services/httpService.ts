@@ -34,6 +34,9 @@ apiClient.interceptors.request.use(
     if (config.headers['Content-Type'] === 'multipart/form-data') {
       delete config.headers['Content-Type'];
     }
+    if(config.headers['Content-Type'] === 'application/pdf') {
+      delete config.headers['Authorization']
+    }
     return config;
   },
   (error: AxiosError) => {
@@ -81,9 +84,14 @@ export const loginRequest = async (username: string, password: string): Promise<
   }
 };
 
-export const fileUpload = async (formData: FormData): Promise<Document> => {
-  const uploadedDoc: Document = await uploadFileRequest('documents/upload-pdf', formData);
+export const fileUpload = async (uploadURL: string, formData: File): Promise<Document> => {
+  const uploadedDoc: Document = await uploadFileRequest(uploadURL, formData, 'application/pdf');
   return uploadedDoc;
+}
+
+export const getPreSignedURL = async (filename: string): Promise<Document & { uploadUrl: string }> => {
+  const uploadApproval: Document & { uploadUrl: string } = await postData('documents/signed-url', { filename, documentLabel: filename })
+  return uploadApproval;
 }
 
 
@@ -97,14 +105,14 @@ export const getDocuments = async (): Promise<Document[]> => {
   return documents;
 }
 
-export const deleteDocuments = async (documentId: string): Promise<{message: string}> => {
-  const documents: {message: string} = await deleteData(`/documents/${documentId}`);
+export const deleteDocuments = async (documentId: string): Promise<{ message: string }> => {
+  const documents: { message: string } = await deleteData(`/documents/${documentId}`);
   return documents;
 }
 
 
-export const getDocumentSummary = async (documentId: string): Promise<{message: string}> => {
-  const documents: {message: string} = await getData(`/documents/summary/${documentId}`);
+export const getDocumentSummary = async (documentId: string): Promise<{ message: string }> => {
+  const documents: { message: string } = await getData(`/documents/summary/${documentId}`);
   return documents;
 }
 
@@ -113,19 +121,19 @@ export const getDocumentQuiz = async (documentId: string): Promise<QuizQuestion[
   return documents;
 }
 
-export const deleteUsers = async (userId: string): Promise<{message: string}> => {
-  const documents: {message: string} = await deleteData(`/users/${userId}`);
+export const deleteUsers = async (userId: string): Promise<{ message: string }> => {
+  const documents: { message: string } = await deleteData(`/users/${userId}`);
   return documents;
 }
 
-export const registerUser = async (user: {username: string, password: string}): Promise<User> => {
-  const addedUser:  {user: User, message: string} = await postData(`/auth/register`, user);
+export const registerUser = async (user: { username: string, password: string }): Promise<User> => {
+  const addedUser: { user: User, message: string } = await postData(`/auth/register`, user);
   return addedUser.user;
 }
 
 export const getUsers = async (): Promise<User[]> => {
-   const users: User[] = await getData(`/users`);
-   return users;
+  const users: User[] = await getData(`/users`);
+  return users;
 }
 
 export const getData = async <T>(endpoint: string): Promise<T> => {
@@ -168,11 +176,11 @@ export const deleteData = async <T, R = T>(endpoint: string): Promise<R> => {
 };
 
 
-export const uploadFileRequest = async <T, R = T>(endpoint: string, data: T): Promise<R> => {
+export const uploadFileRequest = async <T, R = T>(endpoint: string, data: T, contenttype: string): Promise<R> => {
   try {
-    const response: AxiosResponse<ApiResponse<R>> = await apiClient.post(endpoint, data, {
+    const response: AxiosResponse<ApiResponse<R>> = await apiClient.put(endpoint, data, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': contenttype
       }
     });
     return response.data.data;

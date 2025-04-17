@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { fileUpload } from '../services/httpService';
+import { fileUpload, getPreSignedURL } from '../services/httpService';
 import { Document } from '../interfaces/interfaces';
 
 
@@ -50,7 +50,17 @@ const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess, onUploadError})
             setIsUploading(true);
             setUploadSuccess(false);
     
-            const uploadedData: Document = await fileUpload(formData);
+            const uploadedData: Document & { uploadUrl: string } = await getPreSignedURL(file.name);
+
+            const newFile = new File([file], uploadedData.documentName, {
+                type: file.type,
+                lastModified: Date.now(), 
+              });
+
+           const uploadedDoc =  await fileUpload(uploadedData.uploadUrl, newFile);
+
+           console.log(uploadedDoc);
+
             onUploadSuccess(uploadedData);
             setIsUploading(false);
             setUploadSuccess(true);
