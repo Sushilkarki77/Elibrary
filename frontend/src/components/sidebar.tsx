@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getNavItems } from '../services/httpService';
 import { useAuth } from '../context/auth.context';
+import logo from '../assets/logo.png'
 
 const Sidebar: React.FC = () => {
     const [navItems, setNavItems] = useState<{ name: string, path: string }[]>();
@@ -26,7 +27,7 @@ const Sidebar: React.FC = () => {
 
                 {/* <h3 className="text-2xl text-left p-3 font-bold text-gray-800 italic">Elibrary</h3> */}
                <div className='p-2'>
-                  <img className='logo-dashboard' src='./public/logo.png' />
+                  <img className='logo-dashboard' src={logo} />
                </div>
                 
                 <ul className="mt-6">
