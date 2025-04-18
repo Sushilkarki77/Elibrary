@@ -4,7 +4,7 @@ provider:
   name: aws
   timeout: 300
   runtime: nodejs18.x
-  region: "us-east-1"
+  region: ${env:REGION}
   environment:
     PORT: ${env:PORT}
     MONGO_URI: ${env:MONGO_URI}

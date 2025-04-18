@@ -9,10 +9,10 @@ phases:
   build:
     commands:
       - npm run build
-      - serverless deploy  
+      - serverless deploy
 
 artifacts:
-  base-directory: backend/dist  
+  base-directory: backend/dist
   files:
     - '**/*'
   name: BackendBuildOutput
