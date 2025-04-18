@@ -26,7 +26,7 @@ const Sidebar: React.FC = () => {
 
                 {/* <h3 className="text-2xl text-left p-3 font-bold text-gray-800 italic">Elibrary</h3> */}
                <div className='p-2'>
-                  <img className='logo-dashboard' src='public/logo.png' />
+                  <img className='logo-dashboard' src='./public/logo.png' />
                </div>
                 
                 <ul className="mt-6">
