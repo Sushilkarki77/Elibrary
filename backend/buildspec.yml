@@ -2,16 +2,17 @@ version: 0.2
 
 phases:
   install:
-    working-directory: backend  
     commands:
+      - cd backend
       - npm install -g serverless  
       - npm install 
   build:
-    working-directory: backend 
     commands:
-      - serverless deploy 
+      - cd backend
+      - serverless deploy  
 
 artifacts:
+  base-directory: backend/dist  
   files:
     - '**/*'
-  base-directory: backend 
+  name: BackendBuildOutput
