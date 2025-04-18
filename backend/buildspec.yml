@@ -2,13 +2,16 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 18
-    working-directory: backend
+    working-directory: backend  
     commands:
-      - npm install -g serverless
-      - npm install
+      - npm install -g serverless  
+      - npm install 
   build:
-    working-directory: backend
+    working-directory: backend 
     commands:
-      - serverless deploy
+      - serverless deploy 
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: backend 
