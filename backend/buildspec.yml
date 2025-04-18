@@ -8,7 +8,7 @@ phases:
       - npm install 
   build:
     commands:
-      - cd backend
+      - npm run build
       - serverless deploy  
 
 artifacts:
