@@ -5,6 +5,7 @@ phases:
     commands:
       - cd frontend
       - npm install
+      
   build:
     commands:
       - npm run build
