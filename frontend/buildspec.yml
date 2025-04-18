@@ -8,9 +8,9 @@ phases:
   build:
     commands:
       - npm run build
-      - echo "Invalidating CloudFront distribution $DISTRIBUTION_ID..."
+      - echo "Invalidating CloudFront distribution ${env:DISTRIBUTION_ID}..."
       - aws cloudfront create-invalidation \
-          --distribution-id $DISTRIBUTION_ID \
+          --distribution-id ${env:DISTRIBUTION_ID} \
           --paths "/*"
 artifacts:
   files:
