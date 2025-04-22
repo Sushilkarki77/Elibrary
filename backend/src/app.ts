@@ -18,8 +18,19 @@ app.disable('x-powered-by');
 app.disable('etag');
 
 app.use(morgan('dev'));
-app.use(cors());
-app.use(express.json());
+
+
+app.options('*', (req, res) => {
+    res.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    });
+    res.status(200).send();
+  });
+
+
+  app.use(express.json());
 
 app.use('/auth', authRoutes);
 
