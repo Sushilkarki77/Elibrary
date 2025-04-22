@@ -59,8 +59,6 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
-
-
     if (error.response && error.response.status === 403) {
       window.location.href = '/login';
       localStorage.removeItem(TOKEN_KEY);
