@@ -18,9 +18,14 @@ functions:
   api:
     handler: dist/handler.handler 
     events:
-      - http: ANY /
-      - http: ANY {proxy+}
-
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
 
 plugins:
   - serverless-offline
