@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
 import { Document, QuizQuestion, User } from '../interfaces/interfaces';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = 'https://dcj4gp4wwb.execute-api.us-east-1.amazonaws.com';
 const TOKEN_KEY = 'userToken';
 
 
