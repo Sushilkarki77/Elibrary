@@ -74,7 +74,7 @@ export const loginRequest = async (username: string, password: string): Promise<
     return response?.data?.token;
   } catch (error) {
     if (error instanceof AxiosError) {
-      window.alert(error.response?.data.message)
+     
       throw error
     } else {
       throw error;
@@ -93,8 +93,8 @@ export const getPreSignedURL = async (filename: string): Promise<Document & { up
 }
 
 
-export const getNavItems = async (): Promise<{ name: string, path: string }[]> => {
-  const navItems: { name: string, path: string }[] = await getData('/general/nav-items');
+export const getNavItems = async (): Promise<{ name: string, path: string, icon: 'dashboard' | 'users' | 'search' | 'home' | 'folder' }[]> => {
+  const navItems: { name: string, path: string, icon: 'dashboard' | 'users' | 'search' | 'home' | 'folder' }[] = await getData('/general/nav-items');
   return navItems;
 }
 
