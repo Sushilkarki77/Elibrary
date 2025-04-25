@@ -9,6 +9,7 @@ import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
 import UsersList from './components/UsersList'
 import DocumentsList from './components/DocumentsList'
 import QuizComponent from './components/QuizComponent'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
           </Routes>
         </AuthProvider>
       </HashRouter>
+      <Toaster />
     </>
   )
 }

@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { fileUpload, getPreSignedURL } from '../services/httpService';
 import { Document } from '../interfaces/interfaces';
+import toast from 'react-hot-toast';
 
 
 type FileUploadProps = {
@@ -65,13 +66,14 @@ const FileUpload: React.FC<FileUploadProps> = ({onUploadSuccess, onUploadError})
             setIsUploading(false);
             setUploadSuccess(true);
             setUploadError(null);
-            window.alert("Upload successful!");
+            toast.success('Upload Successful!');
+
 
         } catch (error) {
             if(error instanceof Error) {
                 setUploadError(error.message);
                 onUploadError()
-                window.alert(error.message)
+                toast.error(error.message)
             }
         }
        

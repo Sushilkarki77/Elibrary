@@ -5,6 +5,9 @@ import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
 import FileUpload from './FileUpload';
 import { useNavigate } from 'react-router';
+import SummaryRenderer from './SummaryRenderer';
+import toast from 'react-hot-toast';
+
 
 
 
@@ -48,10 +51,11 @@ const DocumentsList: React.FC = () => {
         deleteDocuments(documentId).then(x => {
             if (documents) {
                 setDocuments(prev => prev?.filter(doc => doc._id !== documentId) || []);
-                window.alert(x.message)
+                toast.success(x.message);
             }
         }).catch(x =>
-            window.alert(x)
+            // window.alert(x)
+            toast.error(x)
         );
     }
 
@@ -61,8 +65,7 @@ const DocumentsList: React.FC = () => {
             setSummary(res.summary);
             setProcessingDoc(false);
         }).catch((err) => {
-            console.log(err);
-            window.alert(err.message)
+            toast.error(err.message)
             setProcessingDoc(false);
         });
     }
@@ -74,8 +77,7 @@ const DocumentsList: React.FC = () => {
             setProcessingDoc(false);
             navigate('/quiz', { state: res })
         }).catch((err) => {
-            console.log(err);
-            window.alert(err.message)
+            toast.error(err.message)
             setProcessingDoc(false);
         });;
     }
@@ -89,8 +91,8 @@ const DocumentsList: React.FC = () => {
 
     return (
         <>{documents &&
-            <div className="container mx-auto p-4">
-                <div className='flex justify-between items-center p-2'>
+            <div className="container overflow-auto block max-h-full mx-auto p-4">
+                <div className='flex justify-between items-center pb-2'>
                     <label className='mb-3'>Documents</label>
                     <button className='px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200' onClick={() => setOverlayVisibility(true)}>Add +</button>
                 </div>
@@ -114,12 +116,12 @@ const DocumentsList: React.FC = () => {
                 </Overlay>
 
                 <Overlay isOpen={summary ? true : false} onClose={() => setSummary(null)}>
-                    <div className="mt-8 text-lg text-gray-700 whitespace-pre-wrap break-words max-w-lg max-h-[500px] overflow-auto">{summary}</div>
+                    <div className="mt-8 text-lg text-gray-700 whitespace-pre-wrap break-words max-w-lg max-h-[500px] overflow-auto">{summary && <SummaryRenderer summary={summary} />}</div>
                 </Overlay>
 
                 <Overlay isOpen={downloadURL && downloadURL ? true : false} onClose={() => setdownloadURL(null)}>
-                    <div className="mt-6 text-lg text-gray-700 whitespace-pre-wrap break-words min-w-[91vw] min-h-[70vh] -mx-[23px] overflow-auto">
-                        { downloadURL && <iframe src={downloadURL} width="100%" height={window.innerHeight * 0.9 +`px`} />}
+                    <div className="mt-6 text-lg text-gray-700 whitespace-pre-wrap break-words min-w-[100vw] min-h-[95vh] -mx-[23px] overflow-auto">
+                        { downloadURL && <iframe src={downloadURL} width="100%" height={window.innerHeight * 0.96 +`px`} />}
                     </div>
                 </Overlay>
 
