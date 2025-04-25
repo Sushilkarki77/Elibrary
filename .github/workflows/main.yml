@@ -21,15 +21,3 @@ jobs:
           else
             echo "Backend URL is up and running."
           fi
-
-      - name: Ping Frontend URL
-        run: |
-          echo "Pinging Frontend URL at $(date)"
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://blog-frontend-5tn3.onrender.com)
-          echo "Frontend HTTP Status Code: $response"
-          if [ "$response" -ne 200 ]; then
-            echo "Frontend URL failed with status: $response"
-            exit 1
-          else
-            echo "Frontend URL is up and running."
-          fi
