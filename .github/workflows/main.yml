@@ -1,0 +1,35 @@
+name: Scheduled URL Pinger
+
+on:
+  schedule:
+    - cron: '*/12 * * * *' # Every 10 minutes
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  ping-urls:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Backend URL
+        run: |
+          echo "Pinging Backend URL at $(date)"
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://dcj4gp4wwb.execute-api.us-east-1.amazonaws.com/health)
+          echo "Backend HTTP Status Code: $response"
+          if [ "$response" -ne 200 ]; then
+            echo "Backend URL failed with status: $response"
+            exit 1
+          else
+            echo "Backend URL is up and running."
+          fi
+
+      - name: Ping Frontend URL
+        run: |
+          echo "Pinging Frontend URL at $(date)"
+          response=$(curl -s -o /dev/null -w "%{http_code}" https://blog-frontend-5tn3.onrender.com)
+          echo "Frontend HTTP Status Code: $response"
+          if [ "$response" -ne 200 ]; then
+            echo "Frontend URL failed with status: $response"
+            exit 1
+          else
+            echo "Frontend URL is up and running."
+          fi
