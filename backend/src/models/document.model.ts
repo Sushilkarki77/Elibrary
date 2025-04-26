@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { PopulateOptions, Schema } from "mongoose";
 import { IUser } from "./user.model";
 import { ISubject } from "./subject.model";
 
@@ -39,7 +39,10 @@ const IDocumentSchema: Schema = new Schema<IDocument>({
 export const DocumentModel = mongoose.model<IDocument>('Document', IDocumentSchema);
 
 export const getDocumentsByUserId = async (userId: string): Promise<IDocument[] | null> => {
-    return DocumentModel.find({ userId }) .populate('subjectId').populate('subjectId').exec();
+    return DocumentModel.find({ userId }) .populate('subjectId').populate({
+        path: 'subjectId',
+        as: 'subject' 
+      }as PopulateOptions).exec();
 
 }
 

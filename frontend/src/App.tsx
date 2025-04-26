@@ -7,10 +7,10 @@ import PrivateRoutes from './guards/RouteGuard'
 import { AuthProvider } from './context/auth.context'
 import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
 import UsersList from './components/UsersList'
-import DocumentsList from './components/DocumentsList'
 import QuizComponent from './components/QuizComponent'
 import { Toaster } from 'react-hot-toast'
 import SubjectList from './components/SubjectsList'
+import DocumentsListWrapper from './components/DocumentsListWrapper'
 
 function App() {
 
@@ -24,7 +24,7 @@ function App() {
             <Route element={<PrivateRoutes />} >
               <Route path='/' element={<Dashboard />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path='/dashboard' element={<DocumentsList />} />
+                <Route path='/dashboard' element={<DocumentsListWrapper />} />
                 <Route path='/users' element={<UsersList />} />
                 <Route path='/subjects' element={<SubjectList />} />
 

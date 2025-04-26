@@ -5,6 +5,7 @@ export interface Document {
     userId: string;
     createdAt: string;
     updatedAt: string;
+    subjectId?: Subject
 }
 
 export interface Subject {

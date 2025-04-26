@@ -7,17 +7,34 @@ import FileUpload from './FileUpload';
 import { useNavigate } from 'react-router';
 import SummaryRenderer from './SummaryRenderer';
 import toast from 'react-hot-toast';
+import AppAccordian from './UI/AppAccordian';
 
 
 
 
-const DocumentsList: React.FC = () => {
+const DocumentsListWrapper: React.FC = () => {
     const [documents, setDocuments] = useState<Document[] | null>(null);
     const [overLayVisibility, setOverlayVisibility] = useState(false);
     const [loading, setLoading] = useState(false);
     const [proessingPoc, setProcessingDoc] = useState(false);
     const [summary, setSummary] = useState<string | null>();
     const [downloadURL, setdownloadURL] = useState<string | null>()
+
+    const procesDocuments = (): { [subject: string]: Document[] } => {
+
+        const categorizedDocuments: { [subject: string]: Document[] } = {}
+
+        documents?.reduce((acc, curr) => {
+            if (curr.subjectId?.subjectName) {
+                acc[curr.subjectId.subjectName] = [...acc[curr.subjectId.subjectName] || [], curr]
+            } else {
+                acc["others"] = [...acc['others'] || [], curr]
+            }
+            return acc;
+        }, categorizedDocuments)
+
+        return categorizedDocuments;
+    }
 
     const navigate = useNavigate()
 
@@ -31,6 +48,7 @@ const DocumentsList: React.FC = () => {
         getDocuments().then(x => {
             setDocuments(x);
             setLoading(false);
+            // setCategorizedDocument(procesDocuments());
         })
     }, []);
 
@@ -97,7 +115,29 @@ const DocumentsList: React.FC = () => {
                     <button className='px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200' onClick={() => setOverlayVisibility(true)}>Add +</button>
                 </div>
 
-                {documents.length === 0 ? <div className='text-center'>No Documents!</div> : <table className="min-w-full table-auto border-collapse border  border-gray-300 bg-white rounded-lg">
+                <div className="w-full mx-auto ">
+
+                    {
+                        procesDocuments() && Object.keys(procesDocuments()).map(key => {
+                            return <AppAccordian key={key} title={key}>
+                                <table className='w-full'>
+                                    <thead>
+                                        <tr className="bg-gray-100">
+                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Title</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Date</th>
+                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {procesDocuments()[key].map(x => <DocumrntItem key={x.createdAt} document={x} onDisplayOriginalFile={displayOriginalFile} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
+                                    </tbody>
+                                </table>
+
+                            </AppAccordian>
+                        })}
+                </div>
+
+                {/* {documents.length === 0 ? <div className='text-center'>No Documents!</div> : <table className="min-w-full table-auto border-collapse border  border-gray-300 bg-white rounded-lg">
                     <thead>
                         <tr className="bg-gray-100">
                             <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Title</th>
@@ -109,7 +149,7 @@ const DocumentsList: React.FC = () => {
                         {documents.map(x => <DocumrntItem key={x.createdAt} document={x} onDisplayOriginalFile={displayOriginalFile} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
                     </tbody>
                 </table>
-                }
+                } */}
 
                 <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
                     <FileUpload onUploadSuccess={fileUploadSuccess} onUploadError={() => setOverlayVisibility(false)} />
@@ -121,7 +161,7 @@ const DocumentsList: React.FC = () => {
 
                 <Overlay isOpen={downloadURL && downloadURL ? true : false} onClose={() => setdownloadURL(null)}>
                     <div className="mt-6 text-lg text-gray-700 whitespace-pre-wrap break-words min-w-[100vw] min-h-[95vh] -mx-[23px] overflow-auto">
-                        { downloadURL && <iframe src={downloadURL} width="100%" height={window.innerHeight * 0.96 +`px`} />}
+                        {downloadURL && <iframe src={downloadURL} width="100%" height={window.innerHeight * 0.96 + `px`} />}
                     </div>
                 </Overlay>
 
@@ -137,6 +177,6 @@ const DocumentsList: React.FC = () => {
     );
 };
 
-export default DocumentsList;
+export default DocumentsListWrapper;
 
 
