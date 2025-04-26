@@ -21,10 +21,14 @@ export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, p
         const adminNav = [
             { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
             { name: 'Manage Users', path: '/users', icon: 'users' },
+            { name: 'Subjects', path: '/subjects', icon: 'folder' },
+
         ];
 
         const userNav = [
             { name: 'Dashboard', path: '/dashboard',icon: 'dashboard' },
+            { name: 'Subjects', path: '/subjects', icon: 'folder' }
+
 
         ];
 
