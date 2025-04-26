@@ -29,6 +29,8 @@ app.use('/documents',authenticateToken, documentsRoutes);
 
 app.use('/users', authenticateToken, authorize(['manage_users']), userRoutes);
 
+app.get('/health', (req, res) => {res.status(200).send('OK');});
+
 app.use(routNotFound);
 app.use(errorHandler);
 
