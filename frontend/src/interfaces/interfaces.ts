@@ -7,6 +7,15 @@ export interface Document {
     updatedAt: string;
 }
 
+export interface Subject {
+    _id: string
+    subjectName: string
+    userId: User
+    createdAt: string
+    updatedAt: string
+    __v: number
+  }
+
 export interface User {
     _id: string;
     username: string;

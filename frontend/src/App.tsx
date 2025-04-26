@@ -10,6 +10,7 @@ import UsersList from './components/UsersList'
 import DocumentsList from './components/DocumentsList'
 import QuizComponent from './components/QuizComponent'
 import { Toaster } from 'react-hot-toast'
+import SubjectList from './components/SubjectsList'
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path='/dashboard' element={<DocumentsList />} />
                 <Route path='/users' element={<UsersList />} />
+                <Route path='/subjects' element={<SubjectList />} />
 
                 <Route path='/quiz' element={<QuizComponent />} />
               </Route>

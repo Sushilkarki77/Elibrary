@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
-import { Document, QuizQuestion, User } from '../interfaces/interfaces';
+import { Document, QuizQuestion, Subject, User } from '../interfaces/interfaces';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'userToken';
@@ -106,6 +106,22 @@ export const getDocuments = async (): Promise<Document[]> => {
 export const deleteDocuments = async (documentId: string): Promise<{ message: string }> => {
   const documents: { message: string } = await deleteData(`/documents/${documentId}`);
   return documents;
+}
+
+export const addSubject = async (subject: { subjectName: string}): Promise<Subject> => {
+  const addedSubject: Subject = await postData(`/subjects`, subject);
+  return addedSubject;
+}
+
+
+export const getSubjects = async (): Promise<Subject[]> => {
+  const subjects: Subject[] = await getData('/subjects');
+  return subjects;
+}
+
+export const deleteSubjects = async (subjectId: string): Promise<{ message: string }> => {
+  const subjects: { message: string } = await deleteData(`/subjects/${subjectId}`);
+  return subjects;
 }
 
 export const getOriginalDocument = async (documentId: string): Promise<{ downloadURL: string }> => {

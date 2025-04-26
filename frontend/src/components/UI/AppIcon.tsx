@@ -1,5 +1,5 @@
 import React from 'react';
-import {  Users, Search, Home, Tag, LogOut, LayoutDashboard } from 'lucide-react';
+import {  Users, Search, Home, Tag, LogOut, LayoutDashboard, Folder } from 'lucide-react';
 // icon: 'layout-dashboard' | 'users' | 'search' | 'home' | 'folder';
 
 
@@ -17,6 +17,7 @@ const AppIcon: React.FC<AppIconProps> = ({ icon, size = 18, color = 'black' }) =
     home: Home,
     LogOut: LogOut,
     category: Tag,
+    folder: Folder
   };
 
   const IconComponent = icons[icon];
