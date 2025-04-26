@@ -1,10 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import { IUser } from "./user.model";
+import { ISubject } from "./subject.model";
 
 export interface IDocument extends Document {
     documentName: string;
     documentLabel: string;
     userId: mongoose.Types.ObjectId | IUser;
+    subjectId?: mongoose.Types.ObjectId | ISubject; 
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -23,6 +25,11 @@ const IDocumentSchema: Schema = new Schema<IDocument>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+    },
+    subjectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Subject',  
+        required: false,  
     }
 }, { timestamps: true }
 

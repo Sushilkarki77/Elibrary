@@ -11,6 +11,10 @@ export const documentSchema = z.object({
     documentLabel: z.string()
 });
 
+export const subjectSchema = z.object({
+    subjectName: z.string()
+});
+
 export const fileUploadBody = z.object({
     documentName: z.string(),
     documentLabel: z.string()
