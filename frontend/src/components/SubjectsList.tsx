@@ -62,7 +62,7 @@ const SubjectList: React.FC = () => {
                               <td className="px-6 py-3 text-sm text-gray-800">{subject.subjectName}</td>
                                 <td className="px-6 py-3 text-sm">
                                     <button
-                                        className='text-red-500 hover:underline'
+                                        className='px-2 py-1 text-xs border-2 border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-200'
                                         onClick={() => handleDeleteClick(subject._id)}
                                     >Delete</button>
                                 </td>

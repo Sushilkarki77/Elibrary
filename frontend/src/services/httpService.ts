@@ -87,8 +87,8 @@ export const fileUpload = async (uploadURL: string, formData: File): Promise<Doc
   return uploadedDoc;
 }
 
-export const getPreSignedURL = async (filename: string): Promise<Document & { uploadUrl: string }> => {
-  const uploadApproval: Document & { uploadUrl: string } = await postData('documents/signed-url', { filename, documentLabel: filename })
+export const getPreSignedURL = async (filename: string, subjectId: string): Promise<Document & { uploadUrl: string }> => {
+  const uploadApproval: Document & { uploadUrl: string } = await postData('documents/signed-url', { filename, documentLabel: filename, subjectId })
   return uploadApproval;
 }
 
