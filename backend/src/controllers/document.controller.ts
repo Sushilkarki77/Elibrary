@@ -33,7 +33,7 @@ export const getDocumentsByUserIdHandler: RequestHandler<unknown, ResponseItem<I
 
 }
 
-export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error> = async (req, res, next) => {
+export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error, {documentLabel: string, documentName: string, subjectId?: string}> = async (req, res, next) => {
 
     try {
 
@@ -57,8 +57,11 @@ export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument 
 
         const { uploadUrl, filename} = await getPreSignedURL();
 
+      
 
-        const document = await addDocument(user, filename, reqBody.documentLabel);
+
+        const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
+
 
         if(!document) {
             res.status(401).json({ name: 'error', message: 'No attachment found' });
@@ -78,7 +81,7 @@ export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument 
 
 
 
-export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error> = async (req, res, next) => {
+export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error, {documentLabel: string, documentName: string, subjectId?: string}> = async (req, res, next) => {
 
     try {
 
@@ -100,13 +103,15 @@ export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<ID
         const { uploadUrl, filename} = await getPreSignedURL();
 
 
-        const document = await addDocument(user, filename, reqBody.documentLabel);
+        const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
+
 
         if(!document) {
             res.status(401).json({ name: 'error', message: 'No attachment found' });
             return; 
         }
 
+    
         res.status(200).json({ data: {...document, uploadUrl} })
     } catch (error) {
         return next(error);

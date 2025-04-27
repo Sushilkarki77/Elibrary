@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import generalRoutes from './routes/general.routes';
 import documentsRoutes from './routes/documents.routes';
-
+import subjectRoutes from './routes/subject.routes';
 
 dotenv.config();
 
@@ -21,21 +21,19 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
+app.get('/health', (req, res) => {res.status(200).send('OK');});
 app.use('/auth', authRoutes);
 
 app.use('/general',authenticateToken, generalRoutes);
 app.use('/documents',authenticateToken, documentsRoutes);
-
+app.use('/subjects',authenticateToken, subjectRoutes);
 
 app.use('/users', authenticateToken, authorize(['manage_users']), userRoutes);
-
-app.get('/health', (req, res) => {res.status(200).send('OK');});
 
 app.use(routNotFound);
 app.use(errorHandler);
 
 connectDB();
-
 export default app;
 
 
