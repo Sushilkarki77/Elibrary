@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface AppAccordianProps {
     title: string;
     children: React.ReactNode;
+    accordianState?: boolean,
+    toggleAccordion: () => void
 }
 
-const AppAccordian = ({ title, children }: AppAccordianProps) => {
+const AppAccordian = ({ title, children, accordianState = false,  toggleAccordion}: AppAccordianProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    const toggleAccordion = () => setIsOpen(!isOpen);
+   
+
+    useEffect(() => {
+        setIsOpen(accordianState)
+    }, [accordianState])
 
     return (
-        <div className="border border-gray-300 w-full rounded-md  overflow-hidden">
+        <div className="border border-gray-300 w-full   overflow-hidden">
             <button
                 onClick={toggleAccordion}
                 className="w-full flex justify-between items-center bg-gray-100 p-4 text-left"
@@ -25,7 +31,7 @@ const AppAccordian = ({ title, children }: AppAccordianProps) => {
                 )}
             </button>
             {isOpen && (
-                <div className="p-4 bg-white text-gray-700">
+                <div className="pt-1 bg-white h-[500px] overflow-auto text-gray-700">
                     {children}
                 </div>
             )}

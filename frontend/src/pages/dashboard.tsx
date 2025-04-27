@@ -8,7 +8,8 @@ const Dashboard: React.FC = () => {
 
       <Sidebar />
 
-      <div className="flex-1 bg-white border max-h-screen block border-gray-300 m-4 rounded shadow-2xs p-8">
+      <div className="flex-1 overflow-auto
+ bg-white border max-h-screen block border-gray-300 m-4 rounded shadow-2xs p-8">
             <Outlet />
       </div>
     </div>
