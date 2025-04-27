@@ -57,10 +57,11 @@ export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument 
 
         const { uploadUrl, filename} = await getPreSignedURL();
 
-        console.log(reqBody)
+      
 
 
         const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
+
 
         if(!document) {
             res.status(401).json({ name: 'error', message: 'No attachment found' });
@@ -103,11 +104,14 @@ export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<ID
 
 
         const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
+
+
         if(!document) {
             res.status(401).json({ name: 'error', message: 'No attachment found' });
             return; 
         }
 
+    
         res.status(200).json({ data: {...document, uploadUrl} })
     } catch (error) {
         return next(error);

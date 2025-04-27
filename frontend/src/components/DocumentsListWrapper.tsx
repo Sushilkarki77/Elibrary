@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Document } from '../interfaces/interfaces';
 import { deleteDocuments, getDocumentQuiz, getDocuments, getDocumentSummary, getOriginalDocument } from '../services/httpService';
-import DocumrntItem from './DocumentItem';
 import Overlay from './UI/Overlay';
 import FileUpload from './FileUpload';
 import { useNavigate } from 'react-router';
 import SummaryRenderer from './SummaryRenderer';
 import toast from 'react-hot-toast';
 import AppAccordian from './UI/AppAccordian';
+import DocumentItem from './DocumentItem';
+import { processDocuments } from '../services/App.Utils';
 
 const DocumentsListWrapper: React.FC = () => {
     const [documents, setDocuments] = useState<Document[] | null>(null);
@@ -16,29 +17,11 @@ const DocumentsListWrapper: React.FC = () => {
     const [proessingPoc, setProcessingDoc] = useState(false);
     const [summary, setSummary] = useState<string | null>();
     const [downloadURL, setdownloadURL] = useState<string | null>();
-    const [activeAccordain, setActiveAccordion] = useState<number | null>(0)
+    const [activeAccordoin, setActiveAccordion] = useState<number | null>(0)
 
+    const categorizedDocuments = useMemo(() => processDocuments(documents), [documents]);
 
-    const procesDocuments = (): { [subject: string]: Document[] } => {
-
-        const categorizedDocuments: { [subject: string]: Document[] } = {}
-
-        documents?.reduce((acc, curr) => {
-            if (curr.subjectId?.subjectName) {
-                acc[curr.subjectId.subjectName] = [...acc[curr.subjectId.subjectName] || [], curr]
-            } else {
-                acc["others"] = [...acc['others'] || [], curr]
-            }
-            return acc;
-        }, categorizedDocuments)
-
-        return categorizedDocuments;
-    }
-
-    const handleAccordionToggle = (index: number) => {
-        if (index == activeAccordain) { setActiveAccordion(null); return; }
-        setActiveAccordion(index)
-    }
+    const handleAccordionToggle = (index: number) => setActiveAccordion(prev => prev === index ? null : index);
 
     const navigate = useNavigate()
 
@@ -52,14 +35,12 @@ const DocumentsListWrapper: React.FC = () => {
         getDocuments().then(x => {
             setDocuments(x);
             setLoading(false);
-            // setCategorizedDocument(procesDocuments());
         })
     }, []);
 
 
     const displayOriginalFile = (documentId: string) => {
         getOriginalDocument(documentId).then(res => {
-
             setdownloadURL(res.downloadURL)
         })
     }
@@ -76,7 +57,6 @@ const DocumentsListWrapper: React.FC = () => {
                 toast.success(x.message);
             }
         }).catch(x =>
-
             toast.error(x)
         );
     }
@@ -122,8 +102,8 @@ const DocumentsListWrapper: React.FC = () => {
                 <div className="w-full mx-auto ">
 
                     {
-                        procesDocuments() && Object.keys(procesDocuments()).map((key, index) => {
-                            return <AppAccordian key={key} title={key} toggleAccordion={() => handleAccordionToggle(index)} accordianState={index == activeAccordain ? true : false}>
+                        categorizedDocuments && Object.keys(categorizedDocuments).map((key, index) => {
+                            return <AppAccordian key={key} title={key} toggleAccordion={() => handleAccordionToggle(index)} accordianState={index == activeAccordoin ? true : false}>
                                 <table className='w-full'>
                                     <thead>
                                         <tr className="bg-gray-100">
@@ -133,7 +113,7 @@ const DocumentsListWrapper: React.FC = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {procesDocuments()[key].map(x => <DocumrntItem key={x.createdAt} document={x} onDisplayOriginalFile={displayOriginalFile} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
+                                        {categorizedDocuments[key].map(x => <DocumentItem key={x.createdAt} document={x} onDisplayOriginalFile={displayOriginalFile} onDeleteClick={handleDeleteClick} onGenerateSummary={generateSummary} onGenerateQuiz={generateQuiz} />)}
                                     </tbody>
                                 </table>
 
@@ -161,7 +141,6 @@ const DocumentsListWrapper: React.FC = () => {
             </div>
 
         }
-
 
         </>
     );

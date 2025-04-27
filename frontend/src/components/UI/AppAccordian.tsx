@@ -23,7 +23,7 @@ const AppAccordian = ({ title, children, accordianState = false,  toggleAccordio
                 onClick={toggleAccordion}
                 className="w-full flex justify-between items-center bg-gray-100 p-4 text-left"
             >
-                <span className="font-medium text-gray-800">{title}</span>
+                <span className="font- text-md text-gray-800">{title}</span>
                 {isOpen ? (
                     <ChevronUp className="w-5 h-5 text-gray-600" />
                 ) : (
@@ -31,7 +31,7 @@ const AppAccordian = ({ title, children, accordianState = false,  toggleAccordio
                 )}
             </button>
             {isOpen && (
-                <div className="pt-1 bg-white h-[500px] overflow-auto text-gray-700">
+                <div className="pt-1 bg-white max-h-[45vh] overflow-auto text-gray-700">
                     {children}
                 </div>
             )}
