@@ -41,9 +41,7 @@ export const generateDownloadUrl = async (filename: string): Promise<string> => 
 };
 
 
-export const downloadFileBuffer = async (
-    key: string
-): Promise<Buffer | null> => {
+export const downloadFileBuffer = async ( key: string): Promise<Buffer | null> => {
 
     const command = new GetObjectCommand({
         Bucket: BUCKET,

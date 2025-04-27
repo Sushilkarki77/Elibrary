@@ -54,14 +54,14 @@ export const getDocumentQuiz: RequestHandler<{ documentId: string }, ResponseIte
             return;
         }
 
-        const summary: string | null = await handleQuizGeneration(document.documentName);
+        const quiz: string | null = await handleQuizGeneration(document.documentName);
 
-        if (!summary) {
-            res.status(404).json({ name: 'error', message: 'Coud not generate summary' });
+        if (!quiz) {
+            res.status(404).json({ name: 'error', message: 'Coud not generate Quiz' });
             return;
         }
 
-        const cleanedString = summary.replace(/^```json\n/, '').replace(/\n```$/, '');
+        const cleanedString = quiz.replace(/^```json\n/, '').replace(/\n```$/, '');
 
         const questions: QuizQuestion[] = JSON.parse(cleanedString);
 
