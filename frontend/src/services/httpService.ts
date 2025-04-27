@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { AxiosError } from 'axios';
 import { AxiosResponse } from 'axios';
 import { Document, QuizQuestion, Subject, User } from '../interfaces/interfaces';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const TOKEN_KEY = 'userToken';
+const MAX_RETRIES = 3;
 
 
 
@@ -42,17 +43,26 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => {
     const axiosError = error as AxiosError;
 
-    if (axiosError.response) {
-      console.error(axiosError.response.data);
-      console.error(axiosError.response.status);
-      console.error(axiosError.response.headers);
-    } else if (axiosError.request) {
-      console.error(axiosError.request);
-    } else {
-      console.error('Error', axiosError.message);
+    const config = error.config as AxiosRequestConfig & { _retryCount?: number };
+
+    if (!config || (config._retryCount ?? 0) >= MAX_RETRIES) {
+      if (axiosError.response) {
+        console.error(axiosError.response.data);
+        console.error(axiosError.response.status);
+        console.error(axiosError.response.headers);
+      } else if (axiosError.request) {
+        console.error(axiosError.request);
+      } else {
+        console.error('Error', axiosError.message);
+      }
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    config._retryCount = (config._retryCount ?? 0) + 1;
+
+    console.warn(`Retrying request... Attempt ${config._retryCount}`);
+
+    return apiClient(config);
   }
 );
 
@@ -74,7 +84,7 @@ export const loginRequest = async (username: string, password: string): Promise<
     return response?.data?.token;
   } catch (error) {
     if (error instanceof AxiosError) {
-     
+
       throw error
     } else {
       throw error;
@@ -108,7 +118,7 @@ export const deleteDocuments = async (documentId: string): Promise<{ message: st
   return documents;
 }
 
-export const addSubject = async (subject: { subjectName: string}): Promise<Subject> => {
+export const addSubject = async (subject: { subjectName: string }): Promise<Subject> => {
   const addedSubject: Subject = await postData(`/subjects`, subject);
   return addedSubject;
 }
