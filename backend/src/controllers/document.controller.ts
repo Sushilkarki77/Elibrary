@@ -111,7 +111,8 @@ export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<ID
             return; 
         }
 
-    
+     
+
         res.status(200).json({ data: {...document, uploadUrl} })
     } catch (error) {
         return next(error);
