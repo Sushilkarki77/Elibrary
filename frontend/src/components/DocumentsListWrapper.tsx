@@ -35,6 +35,9 @@ const DocumentsListWrapper: React.FC = () => {
         getDocuments().then(x => {
             setDocuments(x);
             setLoading(false);
+        }).catch(_error => {
+            setLoading(false);
+            console.log(_error);
         })
     }, []);
 
@@ -107,9 +110,9 @@ const DocumentsListWrapper: React.FC = () => {
                                 <table className='w-full'>
                                     <thead>
                                         <tr className="bg-gray-100">
-                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Title</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Date</th>
-                                            <th className="px-6 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
+                                            <th className="px-6 py-2 text-left text-sm font-medium text-gray-600">Title</th>
+                                            <th className="px-6 py-2 text-left text-sm font-medium text-gray-600">Date</th>
+                                            <th className="px-6 py-2 text-left text-sm font-medium text-gray-600">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>

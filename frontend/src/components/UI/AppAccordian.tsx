@@ -21,7 +21,7 @@ const AppAccordian = ({ title, children, accordianState = false,  toggleAccordio
         <div className="border border-gray-300 w-full   overflow-hidden">
             <button
                 onClick={toggleAccordion}
-                className="w-full flex justify-between items-center bg-gray-100 p-4 text-left"
+                className="w-full flex justify-between items-center bg-gray-100 p-2 text-left"
             >
                 <span className="font- text-md text-gray-800">{title}</span>
                 {isOpen ? (
