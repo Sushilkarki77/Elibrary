@@ -4,6 +4,8 @@ import * as Yup from 'yup';
 import { loginRequest } from '../services/httpService';
 import { useAuth } from '../context/auth.context';
 import { useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
+import { AxiosError } from 'axios';
 
 const LoginPage: React.FC = () => {
     const { login } = useAuth();
@@ -21,10 +23,12 @@ const LoginPage: React.FC = () => {
             loginRequest(values.userName, values.password).then((token: string) => {
                 login(token);
                 navigate('/dashboard');
+                toast.success('Login Successful!');
+
             }
-        );
-
-
+        ).catch((error: AxiosError<{message: string}>) => {
+            toast.error(error?.response?.data?.message || error.message);
+        });
         },
     });
 

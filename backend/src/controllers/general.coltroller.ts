@@ -4,7 +4,7 @@ import { findUserByUsername } from "../models/user.model";
 import { ResponseItem } from "../interfaces/interfaces";
 import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 
-export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, path: string }[]> | Error> = async (req, res, next) => {
+export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, path: string, icon: string }[]> | Error> = async (req, res, next) => {
     try {
         const userName = (req as AuthenticatedRequest)?.user?.username;
 
@@ -19,12 +19,15 @@ export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, p
         }
 
         const adminNav = [
-            { name: 'Dashboard', path: '/dashboard' },
-            { name: 'Manage Users', path: '/users' },
+            { name: 'Manage Users', path: '/users', icon: 'users' },
+            { name: 'Subjects', path: '/subjects', icon: 'folder' },
+            { name: 'Documents', path: '/dashboard', icon: 'dashboard' }
         ];
 
         const userNav = [
-            { name: 'Dashboard', path: '/dashboard' },
+            { name: 'Subjects', path: '/subjects', icon: 'folder' },
+            { name: 'Documents', path: '/dashboard',icon: 'dashboard' }
+
 
         ];
 

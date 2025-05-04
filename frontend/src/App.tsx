@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import {  HashRouter, Navigate, Route, Routes } from 'react-router'
 import './App.css'
 import LoginPage from './pages/login'
 import Dashboard from './pages/dashboard'
@@ -7,14 +7,16 @@ import PrivateRoutes from './guards/RouteGuard'
 import { AuthProvider } from './context/auth.context'
 import ProtectedLoginRoute from './guards/ProtectedLoginRouteGuard'
 import UsersList from './components/UsersList'
-import DocumentsList from './components/DocumentsList'
 import QuizComponent from './components/QuizComponent'
+import { Toaster } from 'react-hot-toast'
+import SubjectList from './components/SubjectsList'
+import DocumentsListWrapper from './components/DocumentsListWrapper'
 
 function App() {
 
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <AuthProvider>
           <Routes>
             <Route path='/login' element={<ProtectedLoginRoute><LoginPage /></ProtectedLoginRoute>} />
@@ -22,8 +24,9 @@ function App() {
             <Route element={<PrivateRoutes />} >
               <Route path='/' element={<Dashboard />}>
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path='/dashboard' element={<DocumentsList />} />
+                <Route path='/dashboard' element={<DocumentsListWrapper />} />
                 <Route path='/users' element={<UsersList />} />
+                <Route path='/subjects' element={<SubjectList />} />
 
                 <Route path='/quiz' element={<QuizComponent />} />
               </Route>
@@ -33,7 +36,8 @@ function App() {
 
           </Routes>
         </AuthProvider>
-      </BrowserRouter>
+      </HashRouter>
+      <Toaster />
     </>
   )
 }

@@ -8,6 +8,16 @@ export const userSchema = z.object({
 
 export const documentSchema = z.object({
     documentName: z.string(),
+    documentLabel: z.string(),
+    subjectId:  z.string().optional()
+});
+
+export const subjectSchema = z.object({
+    subjectName: z.string()
+});
+
+export const fileUploadBody = z.object({
+    documentName: z.string(),
     documentLabel: z.string()
 });
 

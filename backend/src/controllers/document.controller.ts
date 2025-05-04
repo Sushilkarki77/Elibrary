@@ -4,7 +4,7 @@ import { AuthenticatedRequest } from "../middlewares/auth.middlewares";
 import { findUserByUsername, IUser } from "../models/user.model";
 import { addDocument, deleteDocumentById, getDocumentById, getDocumentsByUserId, IDocument } from "../models/document.model";
 import mongoose from "mongoose";
-import { deleteFileFromS3, uploadBufferToS3 } from "../services/s3Service";
+import { deleteFileFromS3, getPreSignedURL } from "../services/s3Service";
 
 
 
@@ -33,12 +33,12 @@ export const getDocumentsByUserIdHandler: RequestHandler<unknown, ResponseItem<I
 
 }
 
-export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName: string, documentLabel: string }> = async (req, res, next) => {
+export const addDocumentHandler: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error, {documentLabel: string, documentName: string, subjectId?: string}> = async (req, res, next) => {
 
     try {
 
         const userName = (req as AuthenticatedRequest)?.user?.username;
-        const tempDocument = req.body;
+        const reqBody = req.body;
 
         if (!userName) {
             res.status(404).json({ name: 'error', message: 'User not found' });
@@ -55,17 +55,71 @@ export const addDocumentHandler: RequestHandler<unknown, unknown, { documentName
             return; 
         }
 
-        const s3Filename = await uploadBufferToS3(req.file);
+        const { uploadUrl, filename} = await getPreSignedURL();
+
+      
 
 
-        const document = await addDocument(user, s3Filename, tempDocument.documentLabel);
+        const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
 
-        res.status(200).json({ data: document })
+
+        if(!document) {
+            res.status(401).json({ name: 'error', message: 'No attachment found' });
+            return; 
+        }
+
+        res.status(200).json({ data: {...document, uploadUrl} })
     } catch (error) {
         return next(error);
     }
 
 }
+
+
+
+
+
+
+
+export const getPreSignedURLAndSaveFile: RequestHandler<unknown, ResponseItem<IDocument & {uploadUrl: string}> | Error, {documentLabel: string, documentName: string, subjectId?: string}> = async (req, res, next) => {
+
+    try {
+
+        const userName = (req as AuthenticatedRequest)?.user?.username;
+        const reqBody = req.body;
+
+        if (!userName) {
+            res.status(404).json({ name: 'error', message: 'User not found' });
+            return;
+        }
+        const user: IUser | null = await findUserByUsername(userName);
+        if (!user) {
+            res.status(404).json({ name: 'error', message: 'User not found' });
+            return;
+        }
+
+     
+
+        const { uploadUrl, filename} = await getPreSignedURL();
+
+
+        const document = await addDocument(user, filename, reqBody.documentLabel, reqBody?.subjectId);
+
+
+        if(!document) {
+            res.status(401).json({ name: 'error', message: 'No attachment found' });
+            return; 
+        }
+
+     
+
+        res.status(200).json({ data: {...document, uploadUrl} })
+    } catch (error) {
+        return next(error);
+    }
+
+}
+
 
 
 export const deleteDocumentHandler: RequestHandler<{ documentId: string }, ResponseItem<{ message: string }> | Error, unknown> = async (req, res, next) => {

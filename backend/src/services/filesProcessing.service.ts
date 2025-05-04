@@ -18,7 +18,7 @@ export const extractTextContents = async (pdfContent: Buffer): Promise<Result> =
 
 
 export const extractContents = async (text: string, prompt: string) => {
-  const API_KEY = process.env.GOOGLE_API_KEY || 'AIzaSyD7p7Tv4sZoElXCvqvogTb4_Ryn37lzXiw';
+  const API_KEY = process.env.GOOGLE_API_KEY;
 
   if (!API_KEY) {
     throw new Error("GOOGLE_API_KEY environment variable is not set.");
@@ -73,6 +73,7 @@ export const handleSummaryGeneration = async (filename: string): Promise<string 
 export const handleQuizGeneration = async (filename: string): Promise<string | null> => {
   try {
     const blob = await downloadFileBuffer(filename);
+
     if(!blob) {
       throw new Error('Error reading file');
     }

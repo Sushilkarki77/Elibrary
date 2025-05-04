@@ -2,29 +2,27 @@ import { PutObjectCommand, GetObjectCommand, GetObjectCommandOutput, DeleteObjec
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "../config/s3Client";
 import { Readable } from "stream";
-import path from "path";
 
 
 const BUCKET = process.env.S3_BUCKET_NAME ?? "";
 
-export const uploadBufferToS3 = async (file: Express.Multer.File): Promise<string> => {
-    const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
+export const getPreSignedURL = async (): Promise<{uploadUrl: string, filename: string}> => {
+    const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.pdf`;
 
     const command = new PutObjectCommand({
         Bucket: BUCKET,
-        Key: uniqueFilename,
-        Body: file.buffer,
-        ContentType: file.mimetype,
+        Key: filename,
+        ContentType: 'application/pdf',
     });
 
-    await s3Client.send(command);
+    const uploadUrl = await getSignedUrl(s3Client,command, { expiresIn: 300 });
 
-    return uniqueFilename;
+    return { uploadUrl, filename };
 };
 
 
 export const deleteFileFromS3 = async (filename: string): Promise<void> => {  
-    console.log(filename, 'filename')
+
     const command = new DeleteObjectCommand({
       Bucket: BUCKET,
       Key: filename,
@@ -43,13 +41,14 @@ export const generateDownloadUrl = async (filename: string): Promise<string> => 
 };
 
 
-export const downloadFileBuffer = async (
-    key: string
-): Promise<Buffer | null> => {
+export const downloadFileBuffer = async ( key: string): Promise<Buffer | null> => {
+
     const command = new GetObjectCommand({
         Bucket: BUCKET,
         Key: key,
     });
+
+
 
     try {
         const response: GetObjectCommandOutput = await s3Client.send(command);

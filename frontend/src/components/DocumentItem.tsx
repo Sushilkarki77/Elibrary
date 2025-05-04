@@ -7,25 +7,26 @@ type DocumentProps = {
     onDeleteClick: (documentId: string) => void
     onGenerateSummary: (documentId: string) => void
     onGenerateQuiz: (documentId: string) => void
+    onDisplayOriginalFile: (documentId: string) => void
 
 }
 
-const DocumentItem: React.FC<DocumentProps> = ({ document, onDeleteClick, onGenerateSummary, onGenerateQuiz }) => {
+const DocumentItem: React.FC<DocumentProps> = ({ document, onDeleteClick, onGenerateSummary, onGenerateQuiz, onDisplayOriginalFile }) => {
 
 
     return (
         <tr className="border-b border-gray-300 hover:bg-gray-50">
-            <td className="px-6 py-4 text-sm text-gray-800">{document.documentLabel}</td>
-            <td className="px-6 py-4 text-sm text-gray-800">{formatDate(document.createdAt)}</td>
-            <td className="px-6 py-4 text-sm text-gray-800 flex gap-2">
-                <button  className="px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200">
+            <td className="px-2 py-2 text-sm text-gray-800">{document.documentLabel}</td>
+            <td className="px-2 py-2 text-sm text-gray-800">{formatDate(document.createdAt)}</td>
+            <td className="px-2 py-2 text-sm text-gray-800 flex gap-2">
+                <button onClick={() => onDisplayOriginalFile(document._id)}  className="px-2 py-1 text-xs border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-200">
                     View
                 </button>
-                <button onClick={() => onGenerateSummary(document._id)} className="px-2 py-1 text-xs border-2 border-yellow-500 text-yellow-500 rounded-md hover:bg-yellow-500 hover:text-white transition duration-200">
-                    Generate Summary
+                <button onClick={() => onGenerateSummary(document._id)} className="px-2 py-1 text-xs border-2 border-teal-600 text-teal-600 rounded-md hover:bg-teal-600 hover:text-white transition duration-200">
+                     Summary
                 </button>
                 <button onClick={() => onGenerateQuiz(document._id)} className="px-2 py-1 text-xs border-2 border-green-500 text-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-200">
-                    Generate Quiz
+                     Quiz
                 </button>
 
                 <button onClick={() => onDeleteClick(document._id)} className="px-2 py-1 text-xs border-2 border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition duration-200">

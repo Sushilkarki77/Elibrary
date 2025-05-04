@@ -1,0 +1,29 @@
+service: Elibrary-serverless-app
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:REGION}
+  timeout: 300
+  environment:
+    PORT: ${env:PORT}
+    MONGO_URI: ${env:MONGO_URI}
+    SECRET_KEY: ${env:SECRET_KEY}
+    GOOGLE_API_KEY: ${env:GOOGLE_API_KEY}
+    S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
+    ACCESS_KEY_ID: ${env:ACCESS_KEY_ID}
+    SECRET_ACCESS_KEY: ${env:SECRET_ACCESS_KEY}
+
+functions:
+  api:
+    handler: dist/handler.handler
+    events:
+      - httpApi:
+          path: /
+          method: ANY
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
+
+plugins:
+  - serverless-offline
