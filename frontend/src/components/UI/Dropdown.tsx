@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 
 
 
@@ -12,11 +13,31 @@ interface ActionTypeDropDown {
 }
 
 const ActionDropDown: React.FC<ActionTypeDropDown> = ({ onDeleteClick, onGenerateSummary, onGenerateQuiz, onDisplayOriginalFile }) => {
-
+    const componentRef = useRef<HTMLDivElement>(null);
     const [isOpen, setIsOpen] = useState(false);
 
+
+    useEffect(() => {
+
+        function handleWindowClick(event: MouseEvent) {
+            event.preventDefault();
+            const path = event.composedPath?.();
+            if (componentRef.current && path && !path.includes(componentRef.current)) {
+                if (isOpen) setIsOpen(!isOpen)
+            }
+
+        }
+
+        window.addEventListener('click', handleWindowClick);
+
+        return () => {
+            window.removeEventListener('click', handleWindowClick);
+        };
+
+    }, [isOpen]);
+
     return (
-        <div className="relative inline-block text-left">
+        <div ref={componentRef} className="relative inline-block text-left">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-1 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -59,3 +80,4 @@ const ActionDropDown: React.FC<ActionTypeDropDown> = ({ onDeleteClick, onGenerat
 }
 
 export default ActionDropDown;
+

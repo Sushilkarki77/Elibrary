@@ -2,15 +2,18 @@ import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import { createUser, deleteUserById, findUserByUsername, getAllUsers, IUser } from '../models/user.model';
+import { createInvitedUser, createUser, deleteUserById, findUserByUsername, getAllUsers, IUser } from '../models/user.model';
 import { RoleModel, IRole, seedRoles } from '../models/role.model';
 import mongoose from 'mongoose';
 import { AuthRequestBody, ResponseItem, TokenPayload } from '../interfaces/interfaces';
 import { AuthenticatedRequest } from '../middlewares/auth.middlewares';
+import { sendInvitationEmail } from '../services/App.Utils';
 
 dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY || '';
+
+type InviteRequestBody = { username: string };
 
 export const register: RequestHandler<unknown, ResponseItem<{ user: IUser } & { message: string }> | Error, AuthRequestBody> = async (req, res, next) => {
     try {
@@ -42,6 +45,51 @@ export const register: RequestHandler<unknown, ResponseItem<{ user: IUser } & { 
 
         const newUser = await createUser(username, password, userRole._id as mongoose.Types.ObjectId);
         res.status(201).json({ data: { message: 'User registered', user: newUser } });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+
+
+export const inviteUser: RequestHandler<
+    unknown,
+    ResponseItem<{ user: IUser } & { message: string }> | Error,
+    InviteRequestBody
+> = async (req, res, next) => {
+    try {
+        const { username } = req.body;
+
+        if (!username) {
+            res.status(400).json({ name: 'error', message: 'Username (email) is required' });
+            return;
+        }
+
+        const existingUser = await mongoose.model('User').findOne({ username });
+        if (existingUser) {
+            res.status(400).json({ name: 'error', message: 'User already exists' });
+            return;
+        }
+
+        const userRole: IRole | null = await RoleModel.findOne({ name: 'user' });
+        if (!userRole) {
+            res.status(500).json({ name: 'error', message: 'Default role not found' });
+            return;
+        }
+
+        const token = crypto.randomUUID();
+        const expiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        const invitedUser = await createInvitedUser(username, userRole.id, token, expiry);
+
+        await sendInvitationEmail(username, token);
+
+        res.status(201).json({
+            data: {
+                message: 'Invitation sent',
+                user: invitedUser,
+            },
+        });
     } catch (error) {
         return next(error);
     }

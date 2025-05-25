@@ -6,6 +6,8 @@ export interface IUser extends Document {
     username: string;
     password: string;
     role: mongoose.Types.ObjectId | IRole;
+    invitationToken?: string | null;
+    invitationTokenExpiry?: Date | null;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -20,13 +22,20 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
     },
     password: {
         type: String,
-        required: true,
         minlength: 6,
     },
     role: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Role',
         required: true,
+    },
+    invitationToken: {
+        type: String,
+        default: null,
+    },
+    invitationTokenExpiry: {
+        type: Date,
+        default: null,
     },
 }, { timestamps: true });
 
@@ -53,9 +62,25 @@ export const createUser = async (username: string, password: string, roleId: mon
     return await user.save();
 };
 
+export const createInvitedUser = async (
+    username: string,
+    roleId: mongoose.Types.ObjectId,
+    token: string,
+    expiry: Date
+): Promise<IUser> => {
+    const user = new UserModel({
+        username,
+        role: roleId,
+        invitationToken: token,
+        invitationTokenExpiry: expiry,
+    });
+    return await user.save();
+};
+
+
 export const deleteUserById = async (id: string): Promise<IUser | null> => {
     return UserModel.findByIdAndDelete(id).exec();
-  };
+};
 
 export const findUserByUsername = (username: string): Promise<IUser | null> => {
     return UserModel.findOne({ username }).populate('role').exec();

@@ -1,9 +1,10 @@
 import express from 'express';
-import { login, register } from '../controllers/auth.controllers';
+import { inviteUser, login, register } from '../controllers/auth.controllers';
 
 const router = express.Router();
 
 router.post('/register', register);
+router.post('/invite-user', inviteUser);
 router.post('/login', login);
 
 
