@@ -1,4 +1,4 @@
-# Full Stack Web Application
+# AI Powered E -Library
 
 This is a full-stack web application built with a **React** frontend and a **Node.js Express** backend. The project is structured with both the frontend and backend in separate subdirectories.
 
