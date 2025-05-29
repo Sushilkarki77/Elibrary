@@ -3,11 +3,13 @@ import { deleteUsers, getUsers } from '../services/httpService';
 import { User } from '../interfaces/interfaces';
 import Overlay from './UI/Overlay';
 import UserForm from './UserForm';
+import UserInvitationForm from './UserInvitation';
 
 const UserList: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [overLayVisibility, setOverlayVisibility] = useState(false);
+    const [inviteUserVisibility, setinviteUserVisibility]= useState(false)
 
 
     useEffect(() => {
@@ -30,6 +32,12 @@ const UserList: React.FC = () => {
 
     const handleUserFormSubmit = (user: User) => {
         setUsers([...users, { ...user, role: 'user' }])
+        setOverlayVisibility(false);
+    }
+
+     const handleInviteFormSubmit = (user: User) => {
+        setUsers([...users, { ...user, role: 'user' }])
+        setinviteUserVisibility(false);
     }
 
 
@@ -43,7 +51,12 @@ const UserList: React.FC = () => {
         <div className="container mx-auto p-4">
             <div className='flex justify-between items-center p-2'>
                 <label className='mb-3'>Users</label>
-                <button onClick={() => setOverlayVisibility(true)} className='px-2 py-1 text-xs border-2 border-green-500 text-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-200'>Add +</button>
+                <div className='flex gap-1'>
+                    <button onClick={() => setinviteUserVisibility(true)} className='px-2 py-1 text-xs border-2 border-green-500 text-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-200'>Invite User</button>
+
+                    <button onClick={() => setOverlayVisibility(true)} className='px-2 py-1 text-xs border-2 border-green-500 text-green-500 rounded-md hover:bg-green-500 hover:text-white transition duration-200'>Add +</button>
+                </div>
+
             </div>
 
             {users?.length === 0 ? <div className='text-center'>No Users!</div> :
@@ -74,6 +87,10 @@ const UserList: React.FC = () => {
 
             <Overlay isOpen={overLayVisibility} onClose={() => setOverlayVisibility(x => !x)} >
                 <UserForm onSubmit={handleUserFormSubmit} />
+            </Overlay>
+
+            <Overlay isOpen={inviteUserVisibility} onClose={() => setinviteUserVisibility(x => !x)} >
+                <UserInvitationForm onSubmit={handleInviteFormSubmit} />
             </Overlay>
         </div>
     );

@@ -8,6 +8,7 @@ export interface IUser extends Document {
     role: mongoose.Types.ObjectId | IRole;
     invitationToken?: string | null;
     invitationTokenExpiry?: Date | null;
+    isVerified?: boolean;
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -32,6 +33,10 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
     invitationToken: {
         type: String,
         default: null,
+    },
+     isVerified: {
+        type: Boolean,
+        default: false,
     },
     invitationTokenExpiry: {
         type: Date,

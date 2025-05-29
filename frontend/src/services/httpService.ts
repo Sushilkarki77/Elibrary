@@ -160,6 +160,11 @@ export const registerUser = async (user: { username: string, password: string })
   return addedUser.user;
 }
 
+export const inviteUser = async (user: { username: string }): Promise<User> => {
+  const addedUser: { user: User, message: string } = await postData(`/auth/invite-user`, user);
+  return addedUser.user;
+}
+
 export const getUsers = async (): Promise<User[]> => {
   const users: User[] = await getData(`/users`);
   return users;
