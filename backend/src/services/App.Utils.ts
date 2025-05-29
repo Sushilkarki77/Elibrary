@@ -19,9 +19,7 @@ export const sendInvitationEmail = async (toEmail: string, token: string) => {
         debug: true,
     });
 
-    console.log(transporter)
-
-    const inviteLink = `${process.env.FONTEND_URL}/invite/accept?token=${token}`;
+    const inviteLink = `${process.env.FONTEND_URL}/#/invite/accept?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_FROM!,

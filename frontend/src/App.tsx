@@ -11,6 +11,7 @@ import QuizComponent from './components/QuizComponent'
 import { Toaster } from 'react-hot-toast'
 import SubjectList from './components/SubjectsList'
 import DocumentsListWrapper from './components/DocumentsListWrapper'
+import AcceptInvitation from './components/Acceptinvitation'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <AuthProvider>
           <Routes>
             <Route path='/login' element={<ProtectedLoginRoute><LoginPage /></ProtectedLoginRoute>} />
+            <Route path='/invite/accept' element={<AcceptInvitation />} />
 
             <Route element={<PrivateRoutes />} >
               <Route path='/' element={<Dashboard />}>

@@ -165,6 +165,12 @@ export const inviteUser = async (user: { username: string }): Promise<User> => {
   return addedUser.user;
 }
 
+export const verifyInvitationToken = async (token: string): Promise<boolean> => {
+  const isValid: boolean = await getData(`/auth/verify-token/${token}`);
+  return isValid;
+}
+
+
 export const getUsers = async (): Promise<User[]> => {
   const users: User[] = await getData(`/users`);
   return users;

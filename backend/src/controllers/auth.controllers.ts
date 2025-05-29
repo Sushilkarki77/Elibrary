@@ -96,6 +96,34 @@ export const inviteUser: RequestHandler<
 };
 
 
+export const verifyInvitationToken: RequestHandler = async (req, res, next) => {
+    try {
+        // const token = req.query.token as string;
+        const { token } = req.params;
+
+        if (!token) {
+            res.status(400).json({ name: 'error', message: 'Token is required' });
+            return;
+        }
+
+       
+        const invitedUser = await mongoose.model('User').findOne({
+            invitationToken: token,
+            invitationTokenExpiry: { $gt: new Date() },
+        });
+
+        if (!invitedUser) {
+            res.status(404).json({ name: 'error', message: 'Invalid or expired invitation token' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Valid invitation token', data: { username: invitedUser.username } });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+
 export const login: RequestHandler<unknown, unknown, AuthRequestBody> = async (req, res, next) => {
     try {
         const { username, password } = req.body;
