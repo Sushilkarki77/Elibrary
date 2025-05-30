@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { AuthRequestBody, ResponseItem, TokenPayload } from '../interfaces/interfaces';
 import { AuthenticatedRequest } from '../middlewares/auth.middlewares';
 import { sendInvitationEmail } from '../services/App.Utils';
+import crypto from 'crypto';
 
 dotenv.config();
 
