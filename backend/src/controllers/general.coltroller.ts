@@ -27,8 +27,6 @@ export const getNavItems: RequestHandler<unknown, ResponseItem<{ name: string, p
         const userNav = [
             { name: 'Subjects', path: '/subjects', icon: 'folder' },
             { name: 'Documents', path: '/dashboard',icon: 'dashboard' }
-
-
         ];
 
         const navItems = (user.role as IRole).name === 'admin' ? adminNav : userNav;
