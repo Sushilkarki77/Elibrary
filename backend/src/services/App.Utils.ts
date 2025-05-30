@@ -23,7 +23,7 @@ export const sendInvitationEmail = async (toEmail: string, token: string) => {
 
     const mailOptions = {
         from: process.env.EMAIL_FROM!,
-        to: process.env.EMAIL_TO!,
+        to: toEmail!,
         subject: "Elibrary - Invitation",
         text: inviteLink,
     };

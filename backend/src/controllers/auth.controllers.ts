@@ -139,7 +139,7 @@ export const activateUser: RequestHandler<unknown, ResponseItem<{ token: string 
             invitationTokenExpiry: { $gt: new Date() },
         });
 
-        console.log(invitedUser, "invitedUser")
+      
 
        
 
@@ -150,7 +150,7 @@ export const activateUser: RequestHandler<unknown, ResponseItem<{ token: string 
 
         const user: IUser | null = await updatePasswordAndActivate(password, invitedUser.username);
 
-         console.log(user, "user")
+       
 
         if (!user) {
             res.status(404).json({ name: 'error', message: 'Invalid or expired invitation token' });
