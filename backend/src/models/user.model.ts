@@ -34,7 +34,7 @@ const UserSchema: Schema<IUser> = new Schema<IUser>({
         type: String,
         default: null,
     },
-     isVerified: {
+    isVerified: {
         type: Boolean,
         default: false,
     },
@@ -90,3 +90,16 @@ export const deleteUserById = async (id: string): Promise<IUser | null> => {
 export const findUserByUsername = (username: string): Promise<IUser | null> => {
     return UserModel.findOne({ username }).populate('role').exec();
 };
+
+export const updatePasswordAndActivate = async (password: string, email: string): Promise<IUser | null> => {
+    const user = await UserModel.findOne({ username: email });
+    if (user) {
+        user.password = password;
+        user.isVerified = true;
+        user.invitationToken = null;
+        user.invitationTokenExpiry = null;
+        return await user.save();
+    } else {
+        return null;
+    }
+}

@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import { createInvitedUser, createUser, deleteUserById, findUserByUsername, getAllUsers, IUser } from '../models/user.model';
+import { createInvitedUser, createUser, deleteUserById, findUserByUsername, getAllUsers, IUser, updatePasswordAndActivate } from '../models/user.model';
 import { RoleModel, IRole, seedRoles } from '../models/role.model';
 import mongoose from 'mongoose';
 import { AuthRequestBody, ResponseItem, TokenPayload } from '../interfaces/interfaces';
@@ -106,7 +106,7 @@ export const verifyInvitationToken: RequestHandler = async (req, res, next) => {
             return;
         }
 
-       
+
         const invitedUser = await mongoose.model('User').findOne({
             invitationToken: token,
             invitationTokenExpiry: { $gt: new Date() },
@@ -122,6 +122,56 @@ export const verifyInvitationToken: RequestHandler = async (req, res, next) => {
         return next(error);
     }
 };
+
+
+export const activateUser: RequestHandler<unknown, ResponseItem<{ token: string }> | Error, { token: string, password: string }> = async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+
+        if (!token) {
+            res.status(400).json({ name: 'error', message: 'Token is required' });
+            return;
+        }
+
+
+        const invitedUser:IUser | null = await mongoose.model('User').findOne({
+            invitationToken: token,
+            invitationTokenExpiry: { $gt: new Date() },
+        });
+
+        console.log(invitedUser, "invitedUser")
+
+       
+
+        if (!invitedUser) {
+            res.status(404).json({ name: 'error', message: 'Invalid or expired invitation token' });
+            return;
+        }
+
+        const user: IUser | null = await updatePasswordAndActivate(password, invitedUser.username);
+
+         console.log(user, "user")
+
+        if (!user) {
+            res.status(404).json({ name: 'error', message: 'Invalid or expired invitation token' });
+            return;
+        }
+
+        const tokenPayload: TokenPayload = {
+            id: invitedUser.id.toString(),
+            username: invitedUser.username,
+            role: invitedUser.role,
+        };
+
+        const signedToken = jwt.sign(tokenPayload, SECRET_KEY, { expiresIn: '1h' });
+
+        res.status(200).json({ data: { token: signedToken } });
+
+    } catch (error) {
+        return next(error);
+    }
+};
+
 
 
 export const login: RequestHandler<unknown, unknown, AuthRequestBody> = async (req, res, next) => {

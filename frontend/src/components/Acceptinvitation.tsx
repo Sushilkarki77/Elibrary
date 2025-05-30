@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/auth.context";
-import { Navigate, useSearchParams } from "react-router-dom"; // <-- fixed import
-import { verifyInvitationToken } from "../services/httpService";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom"; // <-- fixed import
+import { activateUser, verifyInvitationToken } from "../services/httpService";
 import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
 
 import * as Yup from 'yup';
 
@@ -12,6 +13,8 @@ const AcceptInvitation = () => {
     const token = searchParams.get("token");
     const [loading, setLoading] = useState(true);
     const [valid, setValid] = useState<boolean | null>(null);
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
 
     const formik = useFormik({
@@ -28,7 +31,11 @@ const AcceptInvitation = () => {
                 .required("Confirm password is required"),
         }),
         onSubmit: (values) => {
-            console.log("Submitted values:", values);
+            activateUser(token || "", values.password).then((token: string) => {
+                login(token);
+                navigate('/dashboard');
+                toast.success('Login Successful!');
+            })
         },
     });
 
